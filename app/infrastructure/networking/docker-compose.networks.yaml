@@ -1,0 +1,33 @@
+networks:
+  # Monitored hosts live here
+  monitored_net:
+    driver: bridge
+    name: monitored_net
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "false" # containers in here should not be able (no reason to) talk to each other - only to outside networks
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
+  # Kafka, stream processing, and other backend services
+  pipeline_net:
+    driver: bridge
+    name: pipeline_net
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
+
+  # Separate network for Elasticsearch / Kibana
+  elastic_net:
+    driver: bridge
+    name: elastic_net
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.23.0.0/16

@@ -1,14 +1,21 @@
+# python stuff
 __pycache__/
 *.py[cod]
 *$py.class
-
 .venv/
 venv/
-
 build/
 dist/
 
+# vscode data
 .vscode/
 .idea/
 
+# any logs
 *.log
+
+# log, config, etc folder for kafka, elastic
+data/
+
+# env
+*.env
