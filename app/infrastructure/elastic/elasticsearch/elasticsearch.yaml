@@ -1,0 +1,12 @@
+cluster.name: elastic-cluster
+node.name: elasticsearch
+
+network.host: 0.0.0.0
+http.port: 9200
+
+path.data: /usr/share/elasticsearch/data
+path.logs: /usr/share/elasticsearch/logs
+
+discovery.type: single-node
+
+bootstrap.memory_lock: true

@@ -1,0 +1,55 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.1
+    container_name: elasticsearch
+    hostname: elasticsearch
+
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+
+    volumes:
+      - ./elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+
+    ports:
+      - "9200:9200"
+
+    networks:
+      - elastic_net
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.3.1
+    container_name: kibana
+    hostname: kibana
+
+    depends_on:
+      - elasticsearch
+
+    volumes:
+      - ./kibana.yaml:/usr/share/kibana/config/kibana.yaml
+      - ./kibana/data:/usr/share/kibana/data
+
+    ports:
+      - "5601:5601"
+
+    networks:
+      - elastic_net
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    restart: unless-stopped
