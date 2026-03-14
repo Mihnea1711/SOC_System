@@ -1,0 +1,23 @@
+logging.level: debug
+logging.selectors: ["kafka","*"]
+
+filebeat.inputs:
+  - type: filestream
+    id: nginx-logs
+    enabled: true
+    paths:
+      - /var/log/nginx/*.log
+    ignore_older: 24h        # stop harvesting files older than 24h
+    clean_inactive: 25h       # remove state for files inactive > 25h
+    scan_frequency: 10s       # check files every 10s
+    tail_files: true
+
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "raw.logs"
+  required_acks: 1
+  compression: gzip
+  max_message_bytes: 1000000
+  retries: 3
+  retry.backoff: 1s

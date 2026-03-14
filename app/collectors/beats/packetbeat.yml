@@ -1,0 +1,12 @@
+packetbeat.interfaces.device: any
+
+packetbeat.protocols:
+  - type: http
+    ports: [80, 8080]
+
+  - type: dns
+    ports: [53]
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "raw.packets"

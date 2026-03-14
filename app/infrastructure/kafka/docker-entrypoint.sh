@@ -12,7 +12,7 @@ done
 
 echo "[Entrypoint] Kafka is ready. Creating topics..."
 
-TOPICS=("raw.logs" "raw.packets" "alerts.signatures" "alerts.anomalies")
+TOPICS=("raw.logs" "raw.packets" "raw.metrics" "raw.audit" "alerts.signatures" "alerts.anomalies")
 
 for TOPIC in "${TOPICS[@]}"; do
   if ! /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list | grep -q "^$TOPIC$"; then

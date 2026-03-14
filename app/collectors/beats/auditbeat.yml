@@ -1,0 +1,10 @@
+auditbeat.modules:
+  - module: auditd
+    audit_rules: |
+      -w /etc/passwd -p wa
+      -w /etc/shadow -p wa
+      -a always,exit -F arch=b64 -S execve
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "raw.audit"

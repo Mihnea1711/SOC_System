@@ -1,0 +1,81 @@
+services:
+  monitored_host:
+    image: nginx:latest
+    container_name: monitored_host
+
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+
+    depends_on:
+      - kafka
+
+    networks:
+      - monitored_net
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:9.3.1
+    container_name: filebeat
+
+    user: root
+
+    volumes:
+      - ./beats/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs/nginx:/var/log/nginx:ro
+      - ./beats/data:/usr/share/filebeat/data
+
+    depends_on:
+      - kafka
+      - monitored_host
+
+    networks:
+      - pipeline_net
+      - monitored_net
+
+  # packetbeat:
+  #   image: docker.elastic.co/beats/packetbeat:9.3.1
+  #   container_name: packetbeat
+
+  #   network_mode: host
+
+  #   volumes:
+  #     - ./beats/packetbeat.yaml:/usr/share/packetbeat/packetbeat.yaml:ro
+
+  #   cap_add:
+  #     - NET_ADMIN
+  #     - NET_RAW
+
+  #   depends_on:
+  #     - kafka
+  #     - monitored_host
+
+  # metricbeat:
+  #   image: docker.elastic.co/beats/metricbeat:9.3.1
+  #   container_name: metricbeat
+
+  #   user: root
+
+  #   volumes:
+  #     - ./beats/metricbeat.yaml:/usr/share/metricbeat/metricbeat.yaml
+  #     - /proc:/hostfs/proc:ro
+  #     - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+
+  #   networks:
+  #     - monitored_net
+  #     - pipeline_net
+
+  # auditbeat:
+  #   image: docker.elastic.co/beats/auditbeat:9.3.1
+  #   container_name: auditbeat
+
+  #   user: root
+
+  #   volumes:
+  #     - ./beats/auditbeat.yaml:/usr/share/auditbeat/auditbeat.yaml
+
+  #   cap_add:
+  #     - AUDIT_CONTROL
+  #     - AUDIT_READ
+
+  #   networks:
+  #     - monitored_net
+  #     - pipeline_net

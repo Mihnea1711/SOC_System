@@ -1,0 +1,12 @@
+metricbeat.modules:
+  - module: system
+    metricsets:
+      - cpu
+      - memory
+      - network
+      - process
+    period: 10s
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "raw.metrics"
