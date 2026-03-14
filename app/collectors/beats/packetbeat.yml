@@ -1,12 +1,22 @@
 packetbeat.interfaces.device: any
 
+# capture only the monitored_net network traffic
+packetbeat.capture.filter: "net 172.20.0.0/16"
+
 packetbeat.protocols:
   - type: http
     ports: [80, 8080]
+    send_request: true
+    send_response: true
 
   - type: dns
     ports: [53]
 
 output.kafka:
-  hosts: ["kafka:9092"]
+  hosts: ["localhost:9094"]
   topic: "raw.packets"
+  required_acks: 1
+  compression: gzip
+  max_message_bytes: 1000000
+  retries: 3
+  retry.backoff: 1s

@@ -12,41 +12,41 @@ services:
     networks:
       - monitored_net
 
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:9.3.1
-    container_name: filebeat
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:9.3.1
+  #   container_name: filebeat
 
-    user: root
-
-    volumes:
-      - ./beats/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./logs/nginx:/var/log/nginx:ro
-      - ./beats/data:/usr/share/filebeat/data
-
-    depends_on:
-      - kafka
-      - monitored_host
-
-    networks:
-      - pipeline_net
-      - monitored_net
-
-  # packetbeat:
-  #   image: docker.elastic.co/beats/packetbeat:9.3.1
-  #   container_name: packetbeat
-
-  #   network_mode: host
+  #   user: root
 
   #   volumes:
-  #     - ./beats/packetbeat.yaml:/usr/share/packetbeat/packetbeat.yaml:ro
-
-  #   cap_add:
-  #     - NET_ADMIN
-  #     - NET_RAW
+  #     - ./beats/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+  #     - ./logs/nginx:/var/log/nginx:ro
+  #     - ./beats/data:/usr/share/filebeat/data
 
   #   depends_on:
   #     - kafka
   #     - monitored_host
+
+  #   networks:
+  #     - pipeline_net
+  #     - monitored_net
+
+  packetbeat:
+    image: docker.elastic.co/beats/packetbeat:9.3.1
+    container_name: packetbeat
+    user: root
+    network_mode: host
+
+    volumes:
+      - ./beats/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    depends_on:
+      - kafka
+      - monitored_host
 
   # metricbeat:
   #   image: docker.elastic.co/beats/metricbeat:9.3.1
