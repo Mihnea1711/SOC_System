@@ -1,0 +1,18 @@
+app:
+  name: "detection-engine"
+  environment: "development"
+  log_level: "INFO"
+
+kafka:
+  bootstrap_servers: "kafka:9092"
+  group_id: "detection-engine-group"
+  topics:
+    consume:
+      - "raw.logs"
+      - "raw.packets"
+    produce_signatures: "alerts.signatures"
+    produce_anomalies: "alerts.anomalies"
+
+elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  alert_index: "alerts-detection"
