@@ -12,13 +12,20 @@ class ElasticsearchClient:
     def connect(self):
         """Initialize the Elasticsearch client."""
         try:
-            self.client = Elasticsearch(hosts=self.hosts)
+            self.client = Elasticsearch(
+                hosts=self.hosts,
+                request_timeout=10,
+                max_retries=3,
+                retry_on_timeout=True
+            )
             # Ping the cluster to verify connection
             if self.client.ping():
-                logger.info(f"Successfully connected to Elasticsearch at {self.hosts}")
+                info = self.client.info()
+                logger.info(f"Successfully connected to Elasticsearch at {self.hosts}. Cluster info: {info.get('cluster_name')}")
             else:
-                logger.error(f"Could not ping Elasticsearch at {self.hosts}")
-                self.client = None
+                logger.error(f"Could not ping Elasticsearch at {self.hosts}. Attempting info() to get error details...")
+                # This will likely throw an exception with the actual error reason
+                self.client.info()
         except Exception as e:
             logger.error(f"Failed to initialize Elasticsearch client: {e}")
             self.client = None

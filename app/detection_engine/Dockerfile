@@ -4,7 +4,6 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    APP_LOG_LEVEL=INFO \
     PYTHONPATH=/app
 
 # Create and set the working directory

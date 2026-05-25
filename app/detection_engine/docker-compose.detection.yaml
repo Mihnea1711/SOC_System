@@ -5,15 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: detection_engine
     environment:
-      - APP_LOG_LEVEL=DEBUG
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - ELASTIC_HOSTS=http://elasticsearch:9200
     volumes:
       - ./config.yaml:/app/config.yaml:ro
       - ./logs:/app/logs
     depends_on:
-      - kafka
-      - elasticsearch
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     networks:
       - pipeline_net
       - elastic_net

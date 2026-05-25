@@ -70,7 +70,7 @@ class KafkaConsumerService:
         try:
             # Most logs (from Beats) will be JSON formatted
             payload = json.loads(msg.value().decode('utf-8'))
-            logger.debug(f"Received message from topic: {topic}")
+            logger.info(f"Received message from topic: {topic}")
             
             # Pass the parsed payload and the source topic to the core processor
             callback(topic, payload)

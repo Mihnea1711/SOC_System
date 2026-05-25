@@ -13,7 +13,7 @@ packetbeat.protocols:
     ports: [53]
 
 output.kafka:
-  hosts: ["localhost:9094"]
+  hosts: ["kafka:9092"]
   topic: "raw.packets"
   required_acks: 1
   compression: gzip

@@ -1,7 +1,7 @@
 app:
   name: "detection-engine"
   environment: "development"
-  log_level: "INFO"
+  log_level: "DEBUG"
 
 kafka:
   bootstrap_servers: "kafka:9092"

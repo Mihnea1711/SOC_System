@@ -9,7 +9,7 @@ services:
       - xpack.security.enabled=false
 
     volumes:
-      - ./elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
+      - ./elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
       - ./elasticsearch/data:/usr/share/elasticsearch/data
 
     ports:
@@ -36,7 +36,7 @@ services:
       - elasticsearch
 
     volumes:
-      - ./kibana.yaml:/usr/share/kibana/config/kibana.yaml
+      - ./kibana/kibana.yaml:/usr/share/kibana/config/kibana.yaml
       - ./kibana/data:/usr/share/kibana/data
 
     ports:

@@ -1,6 +1,5 @@
-import time
 import sys
-import threading
+import time
 from engine.utils.logger import logger
 from engine.utils.config import settings
 
@@ -42,8 +41,14 @@ def main():
     elastic_service = ElasticsearchClient()
 
     try:
+        logger.info("Waiting 10 seconds for Kafka to be fully ready...")
+        time.sleep(10)
+
         # Try to connect producer and elastic search first
         producer_service.connect()
+
+        logger.info("Waiting 10 seconds for Elastic to be fully ready...")
+        time.sleep(10)
         elastic_service.connect()
         
         # Initialize the Core Processor
@@ -52,7 +57,6 @@ def main():
             elastic_client=elastic_service
         )
 
-        # Start the Consumer Loop
         # The consume_loop blocks, so we run it in the main thread.
         # It takes processor.process as the callback.
         logger.info("Starting up the main consumer loop.")

@@ -1,9 +1,10 @@
 import logging
+import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from .config import settings
 
-ENGINE_DIR = Path(__file__).resolve().parent.parent
+ENGINE_DIR = Path(__file__).resolve().parent.parent.parent
 LOG_DIR = ENGINE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
@@ -30,11 +31,11 @@ def setup_logger(name="detection-engine"):
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    # File handler (10 MB per file, keep 5 backups)
-    log_file_path = LOG_DIR / "detection_engine.log"
-    file_handler = RotatingFileHandler(
-        log_file_path, maxBytes=10*1024*1024, backupCount=5
-    )
+    # File handler (Creates a new file for every run based on timestamp)
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_file_path = LOG_DIR / f"detection_engine_{timestamp}.log"
+    
+    file_handler = logging.FileHandler(log_file_path)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 

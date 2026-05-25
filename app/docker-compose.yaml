@@ -2,7 +2,7 @@ include:
   - infrastructure/networking/docker-compose.networks.yaml
 
   - infrastructure/kafka/docker-compose.kafka.yaml
-  #  - infrastructure/elastic/docker-compose.elastic.yaml
+  - infrastructure/elastic/docker-compose.elastic.yaml
 
   - collectors/docker-compose.host.yaml
 

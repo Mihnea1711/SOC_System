@@ -6,6 +6,9 @@ services:
     volumes:
       - ./logs/nginx:/var/log/nginx
 
+    ports:
+      - "8080:80"
+
     depends_on:
       - kafka
 
@@ -36,6 +39,8 @@ services:
     container_name: packetbeat
     user: root
     network_mode: host
+    extra_hosts:
+      - "kafka:172.21.0.2"
 
     volumes:
       - ./beats/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
