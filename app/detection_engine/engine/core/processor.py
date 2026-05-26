@@ -23,7 +23,6 @@ class DetectionProcessor:
             source_topic (str): The topic the message came from (e.g., 'raw.logs').
             payload (dict): The parsed JSON payload of the message.
         """
-        # logger.debug(f"Processing message from {source_topic}: {payload.get('@timestamp', 'no-timestamp')}")
         logger.info("im here and waiting")
         logger.info(payload)
         
