@@ -1,0 +1,27 @@
+name: "Brute Force to XSS"
+description: "Simulates failed logins, a successful login, and then an XSS injection."
+steps:
+  - name: "Failed Brute Force Attempts"
+    generator: "http_bruteforce.py"
+    args:
+      target: "http://localhost:8080/login"
+      attempts: 5
+      success: false
+
+  - name: "Wait"
+    delay: 2
+
+  - name: "Successful Login"
+    generator: "http_bruteforce.py"
+    args:
+      target: "http://localhost:8080/login"
+      attempts: 1
+      success: true
+
+  - name: "Wait"
+    delay: 1
+
+  - name: "XSS Injection"
+    generator: "xss_attack.py"
+    args:
+      target: "http://localhost:8080/search"

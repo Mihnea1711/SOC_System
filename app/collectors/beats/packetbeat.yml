@@ -20,3 +20,23 @@ output.kafka:
   max_message_bytes: 1000000
   retries: 3
   retry.backoff: 1s
+
+processors:
+  - drop_event:
+      when:
+        or:
+          # 1. Drop all DNS traffic (Docker internal resolution creates huge noise)
+          - equals:
+              network.protocol: "dns"
+          - equals:
+              destination.port: 53
+          
+          # 2. Drop internal Kafka/Elasticsearch chatter (if Packetbeat accidentally catches it)
+          - equals:
+              destination.port: 9092 # Kafka
+          - equals:
+              destination.port: 9200 # Elasticsearch
+              
+          # 3. Drop standard Docker/OS background noise (ARP, ICMP)
+          - equals:
+              network.transport: "icmp"

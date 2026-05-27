@@ -1,20 +1,20 @@
 import requests
 import time
 import argparse
-import threading
+import random
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 def send_brute_force_request(target_url, username, password):
     """Sends a single login attempt."""
     try:
         # We simulate a POST request to a login endpoint
-        login_url = f"{target_url}/login"
         data = {'username': username, 'password': password}
         
         # Using a suspicious User-Agent to trigger potential rules
         headers = {'User-Agent': 'Hydra/0.1 (Brute Force Tool)'}
         
-        response = requests.post(login_url, data=data, headers=headers, timeout=5)
+        response = requests.post(target_url, data=data, headers=headers, timeout=5)
         
         # In a real app, 401/403 means failure, 200/302 means success.
         # Since Nginx doesn't have a /login endpoint by default, it will return 404.
@@ -26,7 +26,7 @@ def send_brute_force_request(target_url, username, password):
 
 def simulate_brute_force(target_url, username, password_list, threads):
     """Simulates a rapid brute force attack using multiple threads."""
-    print(f"Starting Brute Force Simulation against {target_url}/login")
+    print(f"Starting Brute Force Simulation against {target_url}")
     print(f"Target Username: {username}")
     print(f"Passwords to try: {len(password_list)}")
     print(f"Threads: {threads}")
@@ -45,16 +45,43 @@ def simulate_brute_force(target_url, username, password_list, threads):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simulate HTTP Brute Force Attack")
-    parser.add_argument("--target", type=str, default="http://localhost:8080", help="Target URL")
+    parser.add_argument("--target", type=str, default="http://localhost:8080/login", help="Target URL")
     parser.add_argument("--user", type=str, default="admin", help="Username to brute force")
-    parser.add_argument("--count", type=int, default=100, help="Number of passwords to try")
+    parser.add_argument("--attempts", type=int, default=100, help="Number of passwords to try")
     parser.add_argument("--threads", type=int, default=10, help="Number of concurrent threads")
+    parser.add_argument("--success", type=lambda x: (str(x).lower() == 'true'), default=False, help="Whether to include a successful login at the end")
+    parser.add_argument("--wordlist", type=str, default="passwords.txt", help="Path to the password wordlist file")
     
     args = parser.parse_args()
     
-    # Generate a dummy password list
-    passwords = [f"password{i}" for i in range(args.count)]
-    # Add some common passwords
-    passwords.extend(["admin", "123456", "qwerty", "root"])
+    # Resolve wordlist path relative to this script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    wordlist_path = os.path.join(script_dir, args.wordlist)
     
+    passwords = []
+    if os.path.exists(wordlist_path):
+        with open(wordlist_path, 'r', encoding='utf-8', errors='ignore') as f:
+            # Read non-empty lines
+            available_passwords = [line.strip() for line in f if line.strip()]
+            
+        if available_passwords:
+            # Randomly sample passwords from the wordlist up to the number of attempts
+            # If attempts > available passwords, we'll allow duplicates by using choices instead of sample
+            if args.attempts <= len(available_passwords):
+                passwords = random.sample(available_passwords, args.attempts)
+            else:
+                passwords = random.choices(available_passwords, k=args.attempts)
+        else:
+            print(f"Warning: Wordlist {wordlist_path} is empty. Falling back to generated passwords.")
+    else:
+        print(f"Warning: Wordlist {wordlist_path} not found. Falling back to generated passwords.")
+        
+    # Fallback if wordlist reading failed
+    if not passwords:
+        passwords = [f"password{i}" for i in range(args.attempts)]
+    
+    if args.success:
+        # Append the "correct" password at the end
+        passwords.append("correct_admin_password_123")
+        
     simulate_brute_force(args.target, args.user, passwords, args.threads)

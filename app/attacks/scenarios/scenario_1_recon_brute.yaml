@@ -1,0 +1,18 @@
+name: "Recon to Brute Force"
+description: "Simulates a port scan followed by an HTTP brute force attack."
+steps:
+  - name: "Port Scan"
+    generator: "port_scan.py"
+    args:
+      target: "localhost"
+      ports: "80,443,8080,9092,9200"
+
+  - name: "Wait for correlation window"
+    delay: 5
+
+  - name: "HTTP Brute Force"
+    generator: "http_bruteforce.py"
+    args:
+      target: "http://localhost:8080/login"
+      attempts: 10
+      success: false

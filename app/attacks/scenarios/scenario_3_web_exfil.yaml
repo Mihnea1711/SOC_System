@@ -1,0 +1,19 @@
+name: "Data Exfiltration via Web Attacks"
+description: "Simulates a Path Traversal to read configuration files, followed by an SQL Injection to dump database contents."
+steps:
+  - name: "Path Traversal (Read /etc/passwd)"
+    generator: "path_traversal.py"
+    args:
+      target: "http://localhost:8080/download"
+      count: 5
+      delay: 0.5
+
+  - name: "Wait"
+    delay: 3
+
+  - name: "SQL Injection (Dump Users)"
+    generator: "sqli_attack.py"
+    args:
+      target: "http://localhost:8080/search"
+      count: 10
+      delay: 0.2

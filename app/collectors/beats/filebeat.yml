@@ -21,3 +21,19 @@ output.kafka:
   max_message_bytes: 1000000
   retries: 3
   retry.backoff: 1s
+
+processors:
+  - drop_event:
+      when:
+        or:
+          # 1. Drop requests for static assets (images, stylesheets, scripts)
+          - regexp:
+              message: '(?i)\.(css|js|jpg|jpeg|png|gif|ico|svg|woff|woff2)(\s|\?)'
+              
+          # 2. Drop common health checks or empty root pings
+          - regexp:
+              message: '(?i)(GET /health |GET /ping |GET / HTTP/1\.[01]" 200)'
+              
+          # 3. Drop internal Docker/Kubernetes health check User-Agents
+          - regexp:
+              message: '(?i)(kube-probe|docker-healthcheck)'

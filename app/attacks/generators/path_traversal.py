@@ -15,7 +15,7 @@ def send_request(target_url, payload):
     """Sends a single malicious request to the target URL."""
     try:
         # Path traversal is often tested against file download or include endpoints
-        url_with_payload = f"{target_url}/download?file={payload}"
+        url_with_payload = f"{target_url}?file={payload}"
         headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 10) DirBuster/1.0'}
         
         start_time = time.time()

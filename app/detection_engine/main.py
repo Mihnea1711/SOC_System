@@ -47,7 +47,7 @@ def main():
         # Try to connect producer and elastic search first
         producer_service.connect()
 
-        logger.info("Waiting 10 seconds for Elastic to be fully ready...")
+        logger.info("Waiting another 10 seconds for Elastic to be fully ready...")
         time.sleep(10)
         elastic_service.connect()
         
