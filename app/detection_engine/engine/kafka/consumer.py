@@ -3,6 +3,10 @@ from confluent_kafka import Consumer, KafkaError, KafkaException
 from engine.utils.config import settings
 from engine.utils.logger import logger
 
+from engine.filtering.filter_manager import NoiseFilterManager
+from engine.filtering.rules import filter_nginx_internal_notices, filter_ubuntu_connectivity, filter_firefox_detectportal, filter_static_assets, filter_nginx_not_found_errors, filter_packetbeat_unmatched_responses
+from engine.normalization.normalizer import Normalizer
+
 class KafkaConsumerService:
     def __init__(self):
         self.bootstrap_servers = settings.kafka['bootstrap_servers']
@@ -17,6 +21,19 @@ class KafkaConsumerService:
         
         self.consumer = None
         self._running = False
+
+        # Initialize Filtering
+        self.filter_manager = NoiseFilterManager()
+        self.filter_manager.register_rule(filter_ubuntu_connectivity)
+        self.filter_manager.register_rule(filter_firefox_detectportal)
+        self.filter_manager.register_rule(filter_static_assets)
+
+        self.filter_manager.register_rule(filter_nginx_internal_notices)
+        self.filter_manager.register_rule(filter_nginx_not_found_errors)
+        self.filter_manager.register_rule(filter_packetbeat_unmatched_responses)
+
+        # Initialize Normalization
+        self.normalizer = Normalizer()
 
     def connect(self):
         """Initialize the Kafka Consumer and subscribe to topics."""
@@ -68,12 +85,22 @@ class KafkaConsumerService:
         """Internal helper to parse the message and pass it to the callback."""
         topic = msg.topic()
         try:
-            # Most logs (from Beats) will be JSON formatted
-            payload = json.loads(msg.value().decode('utf-8'))
-            logger.info(f"Received message from topic: {topic}")
+            # 1. Deserialization
+            raw_payload = json.loads(msg.value().decode('utf-8'))
             
-            # Pass the parsed payload and the source topic to the core processor
-            callback(topic, payload)
+            # 2. Noise Filtering
+            if self.filter_manager.is_noise(raw_payload):
+                # Dropping the event silently to save I/O
+                return
+                
+            # 3. Normalization
+            normalized_event = self.normalizer.normalize(raw_payload)
+            if not normalized_event:
+                # Normalization failed or returned None
+                return
+                
+            # 4. Pass the clean, normalized event to the core processor
+            callback(topic, normalized_event)
             
         except json.JSONDecodeError:
             logger.warning(f"Failed to decode JSON from topic {topic}. Raw payload: {msg.value()}")
