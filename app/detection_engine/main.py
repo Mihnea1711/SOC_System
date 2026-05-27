@@ -7,6 +7,7 @@ from engine.kafka.consumer import KafkaConsumerService
 from engine.kafka.producer import KafkaProducerService
 from engine.elastic.client import ElasticsearchClient
 from engine.core.processor import DetectionProcessor
+from engine.state.local_memory import LocalMemoryStore
 
 # Global variables for graceful shutdown
 consumer_service = None
@@ -51,8 +52,12 @@ def main():
         time.sleep(10)
         elastic_service.connect()
         
+        # Initialize the State Store
+        state_store = LocalMemoryStore(maxsize=10000)
+
         # Initialize the Core Processor
         processor = DetectionProcessor(
+            state_store=state_store,
             kafka_producer=producer_service,
             elastic_client=elastic_service
         )
