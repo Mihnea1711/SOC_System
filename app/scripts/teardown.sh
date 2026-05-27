@@ -16,9 +16,9 @@ if [ "$1" == "--wipe" ]; then
 fi
 
 if [ "$WIPE" = true ]; then
-    echo "WARNING: Wiping all containers AND persistent volumes (Kafka/Elastic data)..."
-    # Stop and remove containers, networks, and volumes defined in the compose files
-    docker compose down -v
+    echo "WARNING: Wiping all containers, images, AND persistent volumes (Kafka/Elastic data)..."
+    # Stop and remove containers, networks, volumes, and built images
+    docker compose down -v --rmi all
     
     echo "Cleaning up host bind-mount directories..."
     # Clean up Kafka data
@@ -34,8 +34,8 @@ if [ "$WIPE" = true ]; then
     echo "Cleaning up local detection engine logs..."
     rm -rf detection_engine/logs/*.log
 else
-    echo "Stopping and removing containers (preserving data volumes)..."
-    docker compose down -v
+    echo "Stopping and removing containers and images (preserving data volumes)..."
+    docker compose down --rmi local
 fi
 
 echo "========================================================"
