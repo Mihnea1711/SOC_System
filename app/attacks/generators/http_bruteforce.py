@@ -16,11 +16,15 @@ def send_brute_force_request(target_url, username, password, spoof_ip=None):
         if spoof_ip:
             headers['X-Forwarded-For'] = spoof_ip
         
-        response = requests.post(target_url, data=data, headers=headers, timeout=5)
-        
         # In a real app, 401/403 means failure, 200/302 means success.
         # Since Nginx doesn't have a /login endpoint by default, it will return 404.
-        # Our detection engine will look for rapid 404s or 401s from the same IP.
+        # To simulate a successful login for our detection rules, if the password is "correct_admin_password_123",
+        # we will hit the root endpoint "/" which returns a 200 OK.
+        if password == "correct_admin_password_123":
+            target_url = target_url.replace("/login", "/")
+            
+        response = requests.post(target_url, data=data, headers=headers, timeout=5)
+        
         print(f"[BRUTE-FORCE] Tried {username}:{password} | Status: {response.status_code} | Spoof IP: {spoof_ip}")
         
     except requests.exceptions.RequestException as e:
@@ -87,4 +91,18 @@ if __name__ == "__main__":
         # Append the "correct" password at the end
         passwords.append("correct_admin_password_123")
         
-    simulate_brute_force(args.target, args.user, passwords, args.threads, args.spoof_ip)
+    # We must ensure the requests are sent sequentially if we want to guarantee
+    # the successful login happens AFTER the failures. ThreadPoolExecutor can
+    # execute them out of order.
+    if args.success:
+        # Force sequential execution if we need a specific order
+        print("[*] Simulating failed attempts first...")
+        simulate_brute_force(args.target, args.user, passwords[:-1], threads=1, spoof_ip=args.spoof_ip)
+        
+        print("[*] Waiting 3 seconds to ensure logs are processed in order...")
+        time.sleep(3)
+        
+        print("[*] Simulating successful login...")
+        simulate_brute_force(args.target, args.user, [passwords[-1]], threads=1, spoof_ip=args.spoof_ip)
+    else:
+        simulate_brute_force(args.target, args.user, passwords, args.threads, args.spoof_ip)

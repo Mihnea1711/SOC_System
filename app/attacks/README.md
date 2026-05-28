@@ -9,7 +9,7 @@ The simulation framework is split into two main components: **Generators** and *
 ### 1. Generators (`/generators`)
 Generators are standalone Python scripts that perform a single, specific type of attack. They are the "primitives" or building blocks of our simulations.
 *   `port_scan.py`: Simulates a rapid TCP SYN/Connect scan across a range of ports to trigger network anomalies.
-*   `http_bruteforce.py`: Simulates rapid HTTP POST requests to a login endpoint, using a dictionary of passwords.
+*   `http_bruteforce.py`: Simulates rapid HTTP POST requests to a login endpoint, using a dictionary of passwords. It includes a `--success` flag that forces sequential execution of failed attempts, followed by a 3-second delay, and finally a successful login. This guarantees the correct event order for testing stateful "Compromised Account" detection rules.
 *   `sqli_attack.py`: Injects common SQL Injection payloads into URL parameters.
 *   `xss_attack.py`: Injects Cross-Site Scripting payloads into URL parameters.
 *   `path_traversal.py`: Attempts to access restricted files (like `/etc/passwd`) using directory traversal payloads.
