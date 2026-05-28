@@ -7,6 +7,7 @@ steps:
       target: "http://localhost:8080/download"
       count: 5
       delay: 0.5
+      spoof-ip: "185.220.101.14"
 
   - name: "Wait"
     delay: 3
@@ -17,3 +18,4 @@ steps:
       target: "http://localhost:8080/search"
       count: 10
       delay: 0.2
+      spoof-ip: "185.220.101.14"

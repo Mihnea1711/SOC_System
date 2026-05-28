@@ -7,6 +7,8 @@ steps:
       target: "http://localhost:8080/login"
       attempts: 5
       success: false
+      spoof-ip: "103.15.26.11"
+
 
   - name: "Wait"
     delay: 2
@@ -17,6 +19,7 @@ steps:
       target: "http://localhost:8080/login"
       attempts: 1
       success: true
+      spoof-ip: "103.15.26.11"
 
   - name: "Wait"
     delay: 1
@@ -25,3 +28,4 @@ steps:
     generator: "xss_attack.py"
     args:
       target: "http://localhost:8080/search"
+      spoof-ip: "103.15.26.11"

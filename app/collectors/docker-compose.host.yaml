@@ -5,6 +5,7 @@ services:
 
     volumes:
       - ./logs/nginx:/var/log/nginx
+      - ./nginx/custom_real_ip.conf:/etc/nginx/conf.d/custom_real_ip.conf:ro
 
     ports:
       - "8080:80"

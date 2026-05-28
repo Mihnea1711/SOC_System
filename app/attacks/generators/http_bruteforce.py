@@ -5,7 +5,7 @@ import random
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-def send_brute_force_request(target_url, username, password):
+def send_brute_force_request(target_url, username, password, spoof_ip=None):
     """Sends a single login attempt."""
     try:
         # We simulate a POST request to a login endpoint
@@ -13,18 +13,20 @@ def send_brute_force_request(target_url, username, password):
         
         # Using a suspicious User-Agent to trigger potential rules
         headers = {'User-Agent': 'Hydra/0.1 (Brute Force Tool)'}
+        if spoof_ip:
+            headers['X-Forwarded-For'] = spoof_ip
         
         response = requests.post(target_url, data=data, headers=headers, timeout=5)
         
         # In a real app, 401/403 means failure, 200/302 means success.
         # Since Nginx doesn't have a /login endpoint by default, it will return 404.
         # Our detection engine will look for rapid 404s or 401s from the same IP.
-        print(f"[BRUTE-FORCE] Tried {username}:{password} | Status: {response.status_code}")
+        print(f"[BRUTE-FORCE] Tried {username}:{password} | Status: {response.status_code} | Spoof IP: {spoof_ip}")
         
     except requests.exceptions.RequestException as e:
         print(f"[BRUTE-FORCE] Request failed: {e}")
 
-def simulate_brute_force(target_url, username, password_list, threads):
+def simulate_brute_force(target_url, username, password_list, threads, spoof_ip=None):
     """Simulates a rapid brute force attack using multiple threads."""
     print(f"Starting Brute Force Simulation against {target_url}")
     print(f"Target Username: {username}")
@@ -37,7 +39,7 @@ def simulate_brute_force(target_url, username, password_list, threads):
     # Use ThreadPoolExecutor to send requests concurrently (rapid fire)
     with ThreadPoolExecutor(max_workers=threads) as executor:
         for password in password_list:
-            executor.submit(send_brute_force_request, target_url, username, password)
+            executor.submit(send_brute_force_request, target_url, username, password, spoof_ip)
             
     elapsed = time.time() - start_time
     print("-" * 50)
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     parser.add_argument("--threads", type=int, default=10, help="Number of concurrent threads")
     parser.add_argument("--success", type=lambda x: (str(x).lower() == 'true'), default=False, help="Whether to include a successful login at the end")
     parser.add_argument("--wordlist", type=str, default="passwords.txt", help="Path to the password wordlist file")
+    parser.add_argument("--spoof-ip", type=str, default=None, help="Spoof X-Forwarded-For IP address")
     
     args = parser.parse_args()
     
@@ -84,4 +87,4 @@ if __name__ == "__main__":
         # Append the "correct" password at the end
         passwords.append("correct_admin_password_123")
         
-    simulate_brute_force(args.target, args.user, passwords, args.threads)
+    simulate_brute_force(args.target, args.user, passwords, args.threads, args.spoof_ip)

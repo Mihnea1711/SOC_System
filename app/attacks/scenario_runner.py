@@ -51,8 +51,17 @@ def run_scenario(scenario_file):
             args = step.get('args', {})
             
             for key, value in args.items():
-                cmd.append(f"--{key}")
-                cmd.append(str(value))
+                # Handle boolean flags (e.g. --success without a value) or specific formatting if needed
+                if isinstance(value, bool):
+                    if value:
+                        cmd.append(f"--{key}")
+                        cmd.append("true")
+                    else:
+                        cmd.append(f"--{key}")
+                        cmd.append("false")
+                else:
+                    cmd.append(f"--{key}")
+                    cmd.append(str(value))
 
             print(f"    Running command: {' '.join(cmd)}")
             

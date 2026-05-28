@@ -1,6 +1,7 @@
 from engine.utils.logger import logger
 from engine.utils.config import settings
 from engine.state.base import StateStore
+from engine.enrichment.enricher import Enricher
 
 class DetectionProcessor:
     def __init__(self, state_store: StateStore, kafka_producer=None, elastic_client=None):
@@ -13,6 +14,7 @@ class DetectionProcessor:
             elastic_client (ElasticsearchClient): For storing enriched logs and alerts in Elasticsearch.
         """
         self.state_store = state_store
+        self.enricher = Enricher()
         self.producer = kafka_producer
         self.elastic = elastic_client
         self.alert_topic = settings.kafka['topics']['produce_signatures']
@@ -31,7 +33,15 @@ class DetectionProcessor:
         #             f"Dst: {normalized_event['destination_ip']}:{normalized_event['destination_port']} | "
         #             f"Method: {normalized_event['http_method']} | "
         #             f"Path: {normalized_event['url_path']}")
-        logger.info(normalized_event)
+
+        # logger.info(normalized_event)
+
+        # 1. Enrich the event
+        enriched_event = self.enricher.enrich(normalized_event)
+        
+        # For now, log the enriched event
+        logger.info(enriched_event)
+
         # TODO: Route `normalized_event` to static and stateful rules here.
         # TODO: Detection (Rules / ML)
         # # Dummy detection logic: if the log contains "failed password", generate an alert
