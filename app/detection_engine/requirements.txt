@@ -2,3 +2,4 @@ PyYAML==6.0.1
 confluent-kafka==2.3.0
 elasticsearch==8.12.0
 geoip2==4.8.0
+river==0.24.2

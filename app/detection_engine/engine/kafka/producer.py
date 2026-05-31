@@ -77,5 +77,5 @@ class KafkaProducerService:
         """Called once for each message produced to indicate delivery result."""
         if err is not None:
             logger.error(f"Message delivery failed: {err}")
-        else:
-            logger.debug(f"Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+        # else:
+            # logger.debug(f"Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")

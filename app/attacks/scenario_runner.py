@@ -65,17 +65,16 @@ def run_scenario(scenario_file):
 
             print(f"    Running command: {' '.join(cmd)}")
             
+            # Use subprocess.Popen instead of subprocess.run to stream output in real-time
             try:
-                # Run the script as a subprocess
-                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
                 print("    Output:")
-                for line in result.stdout.splitlines():
-                    print(f"      {line}")
-            except subprocess.CalledProcessError as e:
-                print(f"    Error executing script: {e}")
-                print("    Error Output:")
-                for line in e.stderr.splitlines():
-                    print(f"      {line}")
+                for line in process.stdout:
+                    print(f"      {line.strip()}")
+                
+                process.wait()
+                if process.returncode != 0:
+                    print(f"    Error executing script. Return code: {process.returncode}")
             except Exception as e:
                 print(f"    Unexpected error: {e}")
 

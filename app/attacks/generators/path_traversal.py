@@ -47,7 +47,7 @@ def simulate_traversal(target_url, count, delay, spoof_ip=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simulate Path Traversal Attacks")
-    parser.add_argument("--target", type=str, default="http://localhost:8080", help="Target URL")
+    parser.add_argument("--target", type=str, default="http://localhost:8080/download", help="Target URL")
     parser.add_argument("--count", type=int, default=10, help="Number of requests to send")
     parser.add_argument("--delay", type=float, default=0.5, help="Delay between requests in seconds")
     parser.add_argument("--spoof-ip", type=str, default=None, help="Spoof X-Forwarded-For IP address")

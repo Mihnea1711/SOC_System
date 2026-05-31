@@ -52,7 +52,7 @@ class ElasticsearchClient:
 
             response = self.client.index(index=index_name, document=document)
             
-            logger.debug(f"Successfully indexed document to {index_name}. ID: {response.get('_id')}")
+            # logger.debug(f"Successfully indexed document to {index_name}. ID: {response.get('_id')}")
             return True
 
         except exceptions.ConnectionError as e:

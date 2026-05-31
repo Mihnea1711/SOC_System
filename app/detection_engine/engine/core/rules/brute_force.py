@@ -1,6 +1,14 @@
 import urllib.parse
 from typing import Dict, Any, Optional
 from engine.state.base import StateStore
+from engine.utils.config import settings
+
+# Load thresholds from config, fallback to defaults
+BF_CONFIG = getattr(settings, 'rules', {}).get('brute_force', {})
+TIME_WINDOW = BF_CONFIG.get('time_window_seconds', 60)
+FAILED_THRESHOLD = BF_CONFIG.get('failed_attempts_threshold', 5)
+COMPROMISED_THRESHOLD = BF_CONFIG.get('compromised_account_threshold', 3)
+SUPPRESSION_TIME = BF_CONFIG.get('suppression_time_seconds', 300)
 
 def detect_brute_force(event: Dict[str, Any], state_store: StateStore) -> Optional[Dict[str, Any]]:
     """
@@ -46,7 +54,7 @@ def detect_brute_force(event: Dict[str, Any], state_store: StateStore) -> Option
     # We will treat 405 as a success indicator for this specific mock scenario.
     if status_code in [200, 301, 302, 405, "200", "301", "302", "405"] and url_path == "/":
         current_count = state_store.get(bf_count_key) or 0
-        if current_count >= 3: # If they had at least 3 failures recently, this success is highly suspicious
+        if current_count >= COMPROMISED_THRESHOLD: # If they had enough failures recently, this success is highly suspicious
             # Clear the count so we don't spam
             state_store.delete(bf_count_key)
             return {
@@ -66,27 +74,27 @@ def detect_brute_force(event: Dict[str, Any], state_store: StateStore) -> Option
     if status_code in [401, 403, 404, "401", "403", "404", None] and "login" in url_path.lower():
         # Use the atomic increment method if available, otherwise fallback to get/set
         try:
-            new_count = state_store.increment(bf_count_key, amount=1, ttl_seconds=60)
+            new_count = state_store.increment(bf_count_key, amount=1, ttl_seconds=TIME_WINDOW)
         except NotImplementedError:
             current_count = state_store.get(bf_count_key) or 0
             new_count = current_count + 1
-            state_store.set(bf_count_key, new_count, ttl_seconds=60)
+            state_store.set(bf_count_key, new_count, ttl_seconds=TIME_WINDOW)
         
         # Threshold Check
-        if new_count >= 5:
+        if new_count >= FAILED_THRESHOLD:
             # Alert Suppression
             if state_store.get(suppress_key):
                 return None
                 
-            # Set suppression for 5 minutes
-            state_store.set(suppress_key, True, ttl_seconds=300)
+            # Set suppression
+            state_store.set(suppress_key, True, ttl_seconds=SUPPRESSION_TIME)
             
             return {
                 "rule_name": "Failed Login Brute Force",
                 "severity": "HIGH",
                 "source_ip": source_ip,
                 "destination_ip": event.get("destination_ip"),
-                "description": f"Detected {new_count} failed login attempts within 60 seconds. Last attempted user: '{username}'",
+                "description": f"Detected {new_count} failed login attempts within {TIME_WINDOW} seconds. Last attempted user: '{username}'",
                 "event": event,
                 "metadata": {"last_username": username, "failures": new_count}
             }

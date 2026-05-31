@@ -1,0 +1,13 @@
+name: "ML Warmup Scenario"
+description: "Generates a steady stream of normal traffic to train the ML Anomaly Detection model."
+
+steps:
+  - name: "Normal Traffic Generation"
+    generator: "warmup.py"
+    args:
+      target: "http://localhost:8080"
+      count: 300
+      delay_min: 0.5
+      delay_max: 2.0
+      spoof_ips: "192.168.1.100,192.168.1.101,192.168.1.102,192.168.1.103,192.168.1.104"
+    delay_after: 5

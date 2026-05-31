@@ -64,7 +64,6 @@ class Enricher:
         event["is_threat_intel_match"] = False
         if source_ip and source_ip in self.threat_intel_ips:
             event["is_threat_intel_match"] = True
-            logger.debug(f"Enrichment hit: Source IP {source_ip} matches threat intel list.")
             
         # 2. GeoIP Enrichment
         event["source_country_iso"] = None

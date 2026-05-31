@@ -17,7 +17,7 @@ def send_brute_force_request(target_url, username, password, spoof_ip=None):
             headers['X-Forwarded-For'] = spoof_ip
         
         # In a real app, 401/403 means failure, 200/302 means success.
-        # Since Nginx doesn't have a /login endpoint by default, it will return 404.
+        # Nginx is configured to return 401 for POST /login.
         # To simulate a successful login for our detection rules, if the password is "correct_admin_password_123",
         # we will hit the root endpoint "/" which returns a 200 OK.
         if password == "correct_admin_password_123":
