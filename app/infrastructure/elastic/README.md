@@ -1,77 +1,59 @@
 # Elasticsearch & Kibana Infrastructure
 
+This directory contains the configuration for the storage and visualization layer of the SOC system.
+
 ## 1. Elasticsearch
 
-Elasticsearch serves as the storage and indexing layer for enriched logs and alerts.
+Elasticsearch serves as the NoSQL storage and indexing layer for enriched logs and generated alerts.
 
-### Service Configs
+### Service Configuration
 
 - **Image:** `docker.elastic.co/elasticsearch/elasticsearch:9.3.1`  
-- **Container Name / Hostname:** `elasticsearch`  
-- **Environment Variables:**
-```
-    discovery.type=single-node # Single-node cluster
-    xpack.security.enabled=false # Disable built-in security for simplicity
-```
-- **Ports:** `9200:9200` -> access Elasticsearch from host or other containers
-- **Volumes:**
-```
-    ./elasticsearch.yaml -> optional configuration overrides
-    ./elasticsearch/data -> persistent data storage
-```
-- **Network:** `elastic_net` -> isolated network for Elastic/Kibana
-- **Restart Policy:** `unless-stopped`
+- **Architecture:** Single-node cluster (`discovery.type=single-node`).
+- **Security:** Built-in security (xpack) is disabled (`xpack.security.enabled=false`) for local development simplicity.
+- **Ports:** `9200:9200` (Access Elasticsearch from host or other containers).
+- **Networks:** Attached to `elastic_net` (isolated network for Elastic/Kibana).
 
+### Volumes
+- `./elasticsearch.yaml` -> Optional configuration overrides.
+- `./elasticsearch/data` -> Persistent data storage (survives container restarts).
 
-## Config Options from `elasticsearch.yaml`
+### Config Options (`elasticsearch.yaml`)
+- **cluster.name**: `elastic-cluster` (Logical name of the cluster)
+- **node.name**: `elasticsearch` (Node name inside the cluster)
+- **network.host**: `0.0.0.0` (Listen on all interfaces)
+- **bootstrap.memory_lock**: `true` (Locks memory for performance)
 
-- **cluster.name**: elastic-cluster             # Logical name of the cluster
-- **node.name**: elasticsearch                  # Node name inside the cluster
-- **network.host**: 0.0.0.0                     # Listen on all interfaces
-- **http.port**: 9200                           # Port for HTTP API
-- **path.data**: /usr/share/elasticsearch/data  # Path for persistent storage
-- **path.logs**: /usr/share/elasticsearch/logs  # Path for logs
-- **discovery.type**: single-node               # Single-node cluster
-- **bootstrap.memory_lock**: true               # Locks memory for performance
-
-## How To Test
+### How To Test
 ```bash
-    curl http://localhost:9200/_cluster/health?pretty
-    curl http://localhost:9200/_cat/indices?v
+curl http://localhost:9200/_cluster/health?pretty
+curl http://localhost:9200/_cat/indices?v
 ```
-
-# Kibana
-
-This document describes the setup of the Kibana service, which provides visualization and dashboards for Elasticsearch data.
 
 ---
 
-## Service Configs
+## 2. Kibana
+
+Kibana provides the frontend UI, visualizations, and dashboards for the data stored in Elasticsearch.
+
+### Service Configuration
 
 - **Image:** `docker.elastic.co/kibana/kibana:9.3.1`  
-- **Container Name / Hostname:** `kibana`  
-- **Depends On:** `elasticsearch` (must be running first)  
-- **Ports:** `5601:5601` -> access Kibana from host or other containers  
-- **Volumes:**
-```
-    ./kibana.yaml -> optional configuration overrides
-    ./kibana/data -> persistent storage
-```
-- **Network:** `elastic_net` -> isolated network for Elastic/Kibana  
-- **Restart Policy:** `unless-stopped`
+- **Dependencies:** Waits for `elasticsearch` to be running first.
+- **Ports:** `5601:5601` (Access Kibana UI from the host browser).
+- **Networks:** Attached to `elastic_net`.
 
-## Config Options from kibana.yaml
+### Volumes
+- `./kibana.yaml` -> Configuration overrides.
+- `./kibana/data` -> Persistent storage for Kibana settings/dashboards.
 
-- **server.name**: kibana                       # Name of the Kibana server
-- **server.host**: 0.0.0.0                      # Listen on all interfaces
-- **server.port**: 5601                         # Port for Kibana UI
-- **elasticsearch.hosts**:                      # Elasticsearch backend(s)
-```
-    http://elasticsearch:9200
-```
-- **monitoring.ui.container.elasticsearch.enabled**: true  # Enable monitoring of Elasticsearch in UI
+### Config Options (`kibana.yaml`)
+- **server.host**: `0.0.0.0` (Listen on all interfaces)
+- **elasticsearch.hosts**: `["http://elasticsearch:9200"]` (Points to the Elasticsearch backend)
+- **monitoring.ui.container.elasticsearch.enabled**: `true` (Enable monitoring of Elasticsearch in UI)
 
-## How To Test
+### How To Test
+Open your browser and navigate to:
 ```
-    http://localhost:5601
+http://localhost:5601
 ```

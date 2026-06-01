@@ -1,38 +1,47 @@
-# Broker Image Configs
+# Kafka Message Broker
 
-- **Image:** `apache/kafka:latest` -> official Kafka image, supports KRaft mode (no Zookeeper required).  
-- **KAFKA_NODE_ID=1** -> unique ID for this broker.  
-- **KAFKA_LISTENERS** -> ports Kafka will listen on internally
-- **KAFKA_PROCESS_ROLES=broker,controller** -> enables KRaft mode (single-node cluster). 
-- **KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092** -> what other containers (like monitored hosts) will use to reach Kafka.  
-- **KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER** -> which listener acts as controller.  
-- **KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093** -> points to the controller port for this single-node cluster.  
-- **KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1** -> replication factor for internal topics.  
-- **KAFKA_NUM_PARTITIONS=3** -> number of partitions per topic by default.  
+This directory contains the configuration for the Kafka message broker, which acts as the central transport layer for the SOC system.
 
-- **PORTS** -> exposes Kafka to the host if you want to interact from outside Docker.
-```
-    9092 -> broker
-    9093 -> controller (internal KRaft port)
-```
-- **VOLUMES** ->
-```
-    ./data -> Kafka persistent storage for topics/logs
-    ./docker-entrypoint.sh -> custom entrypoint script to start Kafka and create topics
-```
-- **NETWORKS** -> attached to pipeline_net so monitored hosts can reach Kafka.
-- **RESTART**: `unless-stopped` -> ensures broker comes back after a crash.
+## Overview
+
+- **Image:** `apache/kafka:latest` (Official Kafka image)
+- **Architecture:** Single-node cluster running in **KRaft mode** (no Zookeeper required).
+
+## Service Configuration
+
+- **KAFKA_NODE_ID=1**: Unique ID for this broker.  
+- **KAFKA_PROCESS_ROLES=broker,controller**: Enables KRaft mode, allowing this node to act as both the broker and the controller. 
+- **KAFKA_LISTENERS**: Ports Kafka will listen on internally:
+  - `PLAINTEXT://0.0.0.0:9092` (Internal Broker)
+  - `EXTERNAL://0.0.0.0:9094` (Host Access)
+  - `CONTROLLER://0.0.0.0:9093` (Internal KRaft Controller)
+- **KAFKA_ADVERTISED_LISTENERS**: What other containers (like monitored hosts) will use to reach Kafka (`PLAINTEXT://kafka:9092`).  
+- **KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093**: Points to the controller port for this single-node cluster.  
+- **KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1**: Replication factor for internal topics (safe for single-node).  
+- **KAFKA_NUM_PARTITIONS=3**: Number of partitions per topic by default.  
+
+### Ports Exposed to Host
+- `9092` -> Broker (External clients, scripts)
+- `9093` -> Controller (Internal KRaft port)
+- `9094` -> Host access (Packetbeat, scripts)
+
+### Volumes
+- `./data` -> Kafka persistent storage for topics/logs.
+- `./docker-entrypoint.sh` -> Custom entrypoint script to start Kafka and create topics.
+
+### Networks
+- Attached to `pipeline_net` so collectors and the detection engine can reach it.
 
 --- 
 
-# Custom Entrypoint
+## Custom Entrypoint & Topics
 
-- **docker-entrypoint.sh** -> single script that:
-  1. Starts Kafka.
-  2. Waits until Kafka is ready.
-  3. Creates the predefined topics automatically.
+The `docker-entrypoint.sh` script automates the setup process:
+1. Starts Kafka.
+2. Waits until Kafka is ready.
+3. Creates the predefined topics automatically.
 
-## Topics
+### Predefined Topics
 | Topic               | Purpose                     |
 | ------------------- | --------------------------- |
 | `raw.logs`          | Filebeat system / app logs  |
@@ -41,4 +50,4 @@
 | `alerts.anomalies`  | Anomaly detection alerts    |
 
 - No separate scripts or external configuration are required to create topics.  
-- To modify topics, update the array inside `docker-entrypoint.sh`.
+- To modify or add topics, update the array inside `docker-entrypoint.sh`.

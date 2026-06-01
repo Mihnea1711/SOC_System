@@ -50,7 +50,7 @@ def generate_normal_traffic(base_url, count, delay_min, delay_max, spoof_ips=Non
     print(f"Delay between requests: {delay_min}s - {delay_max}s")
     print("-" * 50)
     
-    for i in range(count):
+    for _ in range(count):
         # Pick a random IP if a list was provided
         ip = random.choice(spoof_ips) if spoof_ips else None
         

@@ -2,6 +2,16 @@
 
 This directory contains the attack simulation framework for the Distributed Intrusion Detection and Response System. It is designed to generate realistic, multi-step attack traffic that will be captured by our collectors (Filebeat and Packetbeat), routed through Kafka, and ultimately analyzed by the Python Detection Engine.
 
+This directory contains the tools necessary to generate synthetic traffic and simulate cyber attacks against the SOC environment. It is designed to be modular, allowing you to easily create new attack scripts and orchestrate them using YAML scenarios.
+
+## Directory Structure
+
+* `generators/`: Contains individual Python scripts, each designed to simulate a specific type of traffic or attack (e.g., SQLi, XSS, Brute Force, Normal Warmup Traffic).
+* `scenarios/`: Contains YAML files that define a sequence of attacks to run.
+* `scenario_runner.py`: The main orchestration script that reads a YAML scenario and executes the corresponding generators.
+
+---
+
 ## Architecture & Concept
 
 The simulation framework is split into two main components: **Generators** and **Scenarios**.
@@ -24,12 +34,25 @@ Real-world attacks are rarely a single event; they are a sequence of actions. Sc
 *   `scenario_3_web_exfil.yaml`: Simulates a Path Traversal attack followed by an SQL Injection, representing an attacker trying multiple web vectors to exfiltrate data.
 
 ### 3. The Runner (`scenario_runner.py`)
-The runner is the execution engine for the scenarios. It parses the YAML files, handles the timing (delays), and spawns the generator scripts as subprocesses with the correct arguments.
+
+The Scenario Runner is a lightweight orchestration tool. Instead of manually running multiple Python scripts with different arguments, you define the entire attack sequence in a single YAML file.
+
+### How it works:
+1. It parses the provided YAML file.
+2. It iterates through the `steps` defined in the scenario.
+3. For each step, it uses Python's `subprocess` module to execute the specified generator script.
+4. It streams the output of the generator to the console in real-time.
+5. It waits for the specified `delay_after` before moving to the next step.
+
+### Usage:
+```bash
+python scenario_runner.py scenarios/scenario_name.yaml
+```
 
 ## How to Run
 
 1.  **Activate the Virtual Environment:**
-    Ensure you are in the `app/attacks` directory and have activated the virtual environment where the dependencies (`requests`, `PyYAML`) are installed.
+    Ensure you are in the `app/attacks` directory and have activated the virtual environment where the depen    dencies (`requests`, `PyYAML`) are installed.
 
 2.  **Run a Scenario:**
     Use the `scenario_runner.py` script and pass the path to the YAML scenario you want to execute.
@@ -47,3 +70,36 @@ When you run a scenario:
 5.  Both Beats will ship this data to **Kafka**.
 6.  The **Detection Engine** will consume the data, route it, and evaluate it against its rules.
 7.  If the engine successfully correlates the events as defined in the scenario, it will generate a high-severity alert and send it to **Elasticsearch** (for Kibana dashboards) and back to Kafka (for the Response Service).
+   
+## How to Create a New Scenario
+
+Scenarios are defined in YAML format. To create a new scenario, create a new `.yaml` file in the `scenarios/` directory.
+
+### Scenario Structure:
+```yaml
+name: "Name of your scenario"
+description: "What this scenario is trying to achieve"
+steps:
+  - name: "Step 1: Description of the step"
+    script: "generators/name_of_script.py"
+    args:
+      --arg1: "value1"
+      --arg2: "value2"
+    delay_after: 5  # Seconds to wait before the next step
+
+  - name: "Step 2: Description of the next step"
+    script: "generators/another_script.py"
+    args:
+      --target: "http://localhost:8080/login"
+    delay_after: 0
+```
+
+---
+
+## How to Create a New Attack Generator
+
+If you want to simulate a new type of attack (e.g., Command Injection), you need to create a new generator script.
+
+1. **Create the script:** Create a new Python file in the `generators/` directory (e.g., `generators/cmd_injection.py`).
+2. **Use `argparse`:** Your script MUST use Python's `argparse` module to accept configuration from the command line. This is how the `scenario_runner.py` passes the `args` defined in the YAML file to your script.
+3. **Generate Traffic:** Use the `requests` library to send HTTP requests to the target application (`http://localhost:8080` by default).
