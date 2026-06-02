@@ -13,3 +13,4 @@ BEAT_TYPE_FILEBEAT = "filebeat"
 # Filebeat Log Types
 FILEBEAT_LOG_ACCESS = "access.log"
 FILEBEAT_LOG_ERROR = "error.log"
+FILEBEAT_LOG_SSH = "openssh/current"

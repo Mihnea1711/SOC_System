@@ -11,6 +11,16 @@ filebeat.inputs:
     clean_inactive: 25h       # remove state for files inactive > 25h
     scan_frequency: 10s       # check files every 10s
     tail_files: true
+  
+  - type: filestream
+    id: ssh-logs
+    enabled: true
+    paths:
+      - /var/log/ssh/openssh/current
+    ignore_older: 24h
+    clean_inactive: 25h
+    scan_frequency: 10s
+    tail_files: true
 
 
 output.kafka:

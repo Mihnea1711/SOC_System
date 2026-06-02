@@ -3,6 +3,16 @@ packetbeat.interfaces.device: any
 # capture only the monitored_net network traffic
 packetbeat.capture.filter: "net 172.20.0.0/16"
 
+# Enable Network Flow tracking.
+# This is crucial for detecting attacks on encrypted protocols (like SSH) 
+# where Packetbeat cannot read the payload, but we still need to track connection volumes.
+packetbeat.flows:
+  # If no packets are seen for 5s, the flow is considered closed and reported.
+  timeout: 5s
+  # For long-running connections, report an update every 5s.
+  period: 5s
+
+# Application-layer protocol parsers
 packetbeat.protocols:
   - type: http
     ports: [80, 8080]

@@ -1,0 +1,14 @@
+name: "SSH Compromised Account"
+description: "Simulates an attacker failing several SSH logins, and then successfully logging in to demonstrate the Compromised Account alert."
+author: "SOC Admin"
+
+steps:
+  - name: "SSH Brute Force and Compromise"
+    generator: "ssh_compromise.py"
+    args:
+      target: "localhost"
+      port: 2222
+      user: "admin"
+      password: "secretpassword"
+      failures: 6
+      delay: 0.5

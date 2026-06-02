@@ -17,14 +17,7 @@ elasticsearch:
   hosts: ["http://elasticsearch:9200"]
   alert_index: "alerts-detection"
 
-rules:
-  brute_force:
-    time_window_seconds: 60
-    failed_attempts_threshold: 5
-    compromised_account_threshold: 3
-    suppression_time_seconds: 300
-
 ml:
-  anomaly_threshold: 0.85      # Score above which an alert is generated (0.0 to 1.0)
-  window_size_seconds: 60      # How long (in seconds) the FeatureExtractor remembers an IP's past requests to calculate rates (e.g. error_rate over the last 60s)
-  warmup_observations: 180     # Number of events to process before allowing anomaly alerts to fire
+  anomaly_threshold: 0.85 # Score above which an alert is generated (0.0 to 1.0)
+  window_size_seconds: 60 # How long (in seconds) the FeatureExtractor remembers an IP's past requests to calculate rates (e.g. error_rate over the last 60s)
+  warmup_observations: 180 # Number of events to process before allowing anomaly alerts to fire

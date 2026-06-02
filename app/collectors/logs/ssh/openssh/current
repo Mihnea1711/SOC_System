@@ -1,0 +1,96 @@
+2026-06-02 14:24:52.091267095  Server listening on 0.0.0.0 port 2222.
+2026-06-02 14:24:52.091326335  Server listening on :: port 2222.
+2026-06-02 14:24:52.093169034  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-02 14:24:52.099224596  Connection closed by ::1 port 41832
+2026-06-02 14:26:48.070801293  Failed password for admin from 172.20.0.1 port 57920 ssh2
+2026-06-02 14:26:48.174289513  Connection closed by authenticating user admin 172.20.0.1 port 57920 [preauth]
+2026-06-02 14:26:48.644293755  Failed password for admin from 172.20.0.1 port 57924 ssh2
+2026-06-02 14:26:48.747988641  Connection closed by authenticating user admin 172.20.0.1 port 57924 [preauth]
+2026-06-02 14:26:49.217900212  Failed password for admin from 172.20.0.1 port 57928 ssh2
+2026-06-02 14:26:49.321503296  Connection closed by authenticating user admin 172.20.0.1 port 57928 [preauth]
+2026-06-02 14:26:49.792738018  Failed password for admin from 172.20.0.1 port 57934 ssh2
+2026-06-02 14:26:49.896114109  Connection closed by authenticating user admin 172.20.0.1 port 57934 [preauth]
+2026-06-02 14:26:49.896732905  srclimit_penalise: 172.20.0.1/32: activating ipv4 penalty of 18 seconds for penalty: failed authentication
+2026-06-02 14:26:50.296231896  drop connection #0 from [172.20.0.1]:57942 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:50.799833288  drop connection #0 from [172.20.0.1]:57954 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:51.301305628  drop connection #0 from [172.20.0.1]:57964 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:51.802428465  drop connection #0 from [172.20.0.1]:57968 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:52.303713975  drop connection #0 from [172.20.0.1]:57982 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:52.806778100  drop connection #0 from [172.20.0.1]:57988 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:53.308173257  drop connection #0 from [172.20.0.1]:57990 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:53.809448145  drop connection #0 from [172.20.0.1]:57994 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:54.310721488  drop connection #0 from [172.20.0.1]:57996 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:54.811882392  drop connection #0 from [172.20.0.1]:58006 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:55.313557512  drop connection #0 from [172.20.0.1]:58022 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:55.814880415  drop connection #0 from [172.20.0.1]:58030 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:26:56.316654221  drop connection #0 from [172.20.0.1]:58036 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 14:27:08.921848552  Failed password for admin from 172.20.0.1 port 36090 ssh2
+2026-06-02 14:27:09.025089691  Connection closed by authenticating user admin 172.20.0.1 port 36090 [preauth]
+2026-06-02 14:27:09.494881285  Failed password for admin from 172.20.0.1 port 36098 ssh2
+2026-06-02 14:27:09.597883147  Connection closed by authenticating user admin 172.20.0.1 port 36098 [preauth]
+2026-06-02 14:27:10.067827949  Failed password for admin from 172.20.0.1 port 36104 ssh2
+2026-06-02 14:27:10.171130326  Connection closed by authenticating user admin 172.20.0.1 port 36104 [preauth]
+2026-06-02 14:27:10.641949801  Failed password for admin from 172.20.0.1 port 36120 ssh2
+2026-06-02 14:27:10.745107875  Connection closed by authenticating user admin 172.20.0.1 port 36120 [preauth]
+2026-06-02 14:27:10.745633945  srclimit_penalise: 172.20.0.1/32: activating ipv4 penalty of 18 seconds for penalty: failed authentication
+2026-06-02 14:27:29.768708223  Failed password for admin from 172.20.0.1 port 48862 ssh2
+2026-06-02 14:27:29.871666213  Connection closed by authenticating user admin 172.20.0.1 port 48862 [preauth]
+2026-06-02 14:27:30.340785838  Failed password for admin from 172.20.0.1 port 48876 ssh2
+2026-06-02 14:27:30.443892308  Connection closed by authenticating user admin 172.20.0.1 port 48876 [preauth]
+2026-06-02 14:27:30.913845192  Failed password for admin from 172.20.0.1 port 48882 ssh2
+2026-06-02 14:27:31.017034460  Connection closed by authenticating user admin 172.20.0.1 port 48882 [preauth]
+2026-06-02 14:27:31.487193017  Failed password for admin from 172.20.0.1 port 48894 ssh2
+2026-06-02 14:27:31.590032475  Connection closed by authenticating user admin 172.20.0.1 port 48894 [preauth]
+2026-06-02 14:27:31.590768319  srclimit_penalise: 172.20.0.1/32: activating ipv4 penalty of 19 seconds for penalty: failed authentication
+2026-06-02 14:27:51.110911232  Failed password for admin from 172.20.0.1 port 54982 ssh2
+2026-06-02 14:27:51.214027778  Connection closed by authenticating user admin 172.20.0.1 port 54982 [preauth]
+2026-06-02 14:27:51.683963321  Failed password for admin from 172.20.0.1 port 54986 ssh2
+2026-06-02 14:27:51.787031142  Connection closed by authenticating user admin 172.20.0.1 port 54986 [preauth]
+2026-06-02 14:27:52.257520953  Failed password for admin from 172.20.0.1 port 54996 ssh2
+2026-06-02 14:27:52.360781588  Connection closed by authenticating user admin 172.20.0.1 port 54996 [preauth]
+2026-06-02 14:27:52.831154700  Failed password for admin from 172.20.0.1 port 55010 ssh2
+2026-06-02 14:27:52.934606415  Connection closed by authenticating user admin 172.20.0.1 port 55010 [preauth]
+2026-06-02 14:27:52.935091356  srclimit_penalise: 172.20.0.1/32: activating ipv4 penalty of 18 seconds for penalty: failed authentication
+2026-06-02 14:30:07.535087141  Received signal 15; terminating.
+2026-06-02 19:42:07.039720462  Server listening on 0.0.0.0 port 2222.
+2026-06-02 19:42:07.039775707  Server listening on :: port 2222.
+2026-06-02 19:42:07.041367228  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-02 19:42:07.048563153  Connection closed by ::1 port 35180
+2026-06-02 19:48:21.956611392  Received signal 15; terminating.
+2026-06-02 19:48:57.911843497  Server listening on 0.0.0.0 port 2222.
+2026-06-02 19:48:57.911897091  Server listening on :: port 2222.
+2026-06-02 19:48:57.915057541  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-02 19:48:57.935984317  Connection closed by ::1 port 51696
+2026-06-02 19:50:10.540126467  Failed password for admin from 172.20.0.1 port 50728 ssh2
+2026-06-02 19:50:10.645158254  Connection closed by authenticating user admin 172.20.0.1 port 50728 [preauth]
+2026-06-02 19:50:11.118277374  Failed password for admin from 172.20.0.1 port 50744 ssh2
+2026-06-02 19:50:11.222878152  Connection closed by authenticating user admin 172.20.0.1 port 50744 [preauth]
+2026-06-02 19:50:11.695979147  Failed password for admin from 172.20.0.1 port 50756 ssh2
+2026-06-02 19:50:11.800375752  Connection closed by authenticating user admin 172.20.0.1 port 50756 [preauth]
+2026-06-02 19:50:12.272847516  Failed password for admin from 172.20.0.1 port 50772 ssh2
+2026-06-02 19:50:12.377575438  Connection closed by authenticating user admin 172.20.0.1 port 50772 [preauth]
+2026-06-02 19:50:12.378160978  srclimit_penalise: 172.20.0.1/32: activating ipv4 penalty of 19 seconds for penalty: failed authentication
+2026-06-02 19:50:12.777649890  drop connection #0 from [172.20.0.1]:50774 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 19:50:13.280985356  drop connection #0 from [172.20.0.1]:50786 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 19:50:13.782166781  drop connection #0 from [172.20.0.1]:50794 on [172.20.0.2]:2222 penalty: failed authentication
+2026-06-02 19:53:47.420479492  Received signal 15; terminating.
+2026-06-02 19:54:35.436706540  Server listening on 0.0.0.0 port 2222.
+2026-06-02 19:54:35.436765543  Server listening on :: port 2222.
+2026-06-02 19:54:35.436770031  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-02 19:54:35.438060914  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-02 19:54:35.444574586  Connection closed by ::1 port 42228
+2026-06-02 19:55:29.760476751  Failed password for admin from 172.20.0.1 port 33084 ssh2
+2026-06-02 19:55:29.865030196  Connection closed by authenticating user admin 172.20.0.1 port 33084 [preauth]
+2026-06-02 19:55:30.338698661  Failed password for admin from 172.20.0.1 port 51240 ssh2
+2026-06-02 19:55:30.444627324  Connection closed by authenticating user admin 172.20.0.1 port 51240 [preauth]
+2026-06-02 19:55:30.919935734  Failed password for admin from 172.20.0.1 port 51252 ssh2
+2026-06-02 19:55:31.025811534  Connection closed by authenticating user admin 172.20.0.1 port 51252 [preauth]
+2026-06-02 19:55:31.500407255  Failed password for admin from 172.20.0.1 port 51256 ssh2
+2026-06-02 19:55:31.606233376  Connection closed by authenticating user admin 172.20.0.1 port 51256 [preauth]
+2026-06-02 19:55:32.079745532  Failed password for admin from 172.20.0.1 port 51272 ssh2
+2026-06-02 19:55:32.185662689  Connection closed by authenticating user admin 172.20.0.1 port 51272 [preauth]
+2026-06-02 19:55:32.660213311  Failed password for admin from 172.20.0.1 port 51284 ssh2
+2026-06-02 19:55:32.765836814  Connection closed by authenticating user admin 172.20.0.1 port 51284 [preauth]
+2026-06-02 19:55:33.241826234  Accepted password for admin from 172.20.0.1 port 51292 ssh2
+2026-06-02 19:55:33.267191447  Connection closed by 172.20.0.1 port 51292
+2026-06-02 20:00:49.876206332  Received signal 15; terminating.

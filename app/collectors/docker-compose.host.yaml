@@ -18,6 +18,27 @@ services:
     networks:
       - monitored_net
 
+  ssh_server:
+    image: lscr.io/linuxserver/openssh-server:latest
+    container_name: ssh_server
+    # This acts as a honeypot/vulnerable service to demonstrate TCP-layer 
+    # brute force detection (since SSH payloads are encrypted).
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - USER_NAME=admin
+      - USER_PASSWORD=secretpassword
+      - PASSWORD_ACCESS=true
+    volumes:
+      - ./logs/ssh:/config/logs
+      # We mount a custom sshd_config to disable MaxStartups and PerSourcePenalties
+      - ./ssh/sshd_config:/etc/ssh/sshd_config:ro
+    ports:
+      - "2222:2222"
+    networks:
+      - monitored_net
+
   filebeat:
     image: docker.elastic.co/beats/filebeat:9.3.1
     container_name: filebeat
@@ -27,6 +48,7 @@ services:
     volumes:
       - ./beats/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./logs/nginx:/var/log/nginx:ro
+      - ./logs/ssh:/var/log/ssh:ro
       - ./beats/data:/usr/share/filebeat/data
 
     depends_on:
