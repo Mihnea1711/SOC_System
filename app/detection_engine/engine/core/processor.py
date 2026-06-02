@@ -23,7 +23,7 @@ class DetectionProcessor:
             elastic_client (ElasticsearchClient): For storing enriched logs and alerts in Elasticsearch.
         """
         self.state_store = state_store
-        self.enricher = Enricher()
+        self.enricher = Enricher(state_store=self.state_store)
         self.producer = kafka_producer
         self.elastic = elastic_client
         
@@ -56,7 +56,7 @@ class DetectionProcessor:
                 alert = rule(enriched_event, self.state_store)
                 if alert:
                     alerts.append(alert)
-            except Exception as e:
+            except Exception:
                 logger.exception(f"Error running rule {rule.__name__}")
 
         # 3. Publish Signature Alerts

@@ -22,6 +22,7 @@ class ElasticsearchClient:
             if self.client.ping():
                 info = self.client.info()
                 logger.info(f"Successfully connected to Elasticsearch at {self.hosts}. Cluster info: {info.get('cluster_name')}")
+                self._ensure_index_template()
             else:
                 logger.error(f"Could not ping Elasticsearch at {self.hosts}. Attempting info() to get error details...")
                 # This will likely throw an exception with the actual error reason
@@ -29,6 +30,36 @@ class ElasticsearchClient:
         except Exception as e:
             logger.error(f"Failed to initialize Elasticsearch client: {e}")
             self.client = None
+
+    def _ensure_index_template(self):
+        """
+        Ensures that the index template exists so that fields like source_location 
+        are correctly mapped as geo_point for Kibana Maps.
+        """
+        template_name = "alerts-detection-template"
+        template_body = {
+            "index_patterns": [f"{self.alert_index}*"],
+            "template": {
+                "mappings": {
+                    "properties": {
+                        "event.source_location": {
+                            "type": "geo_point"
+                        },
+                        "@timestamp": {
+                            "type": "date"
+                        }
+                    }
+                }
+            }
+        }
+        
+        try:
+            # Check if template already exists
+            if not self.client.indices.exists_index_template(name=template_name):
+                logger.info(f"Creating Elasticsearch index template '{template_name}' for geo_point mapping...")
+                self.client.indices.put_index_template(name=template_name, body=template_body)
+        except Exception as e:
+            logger.error(f"Failed to create index template: {e}")
 
     def index_document(self, index_name: str, document: dict):
         """

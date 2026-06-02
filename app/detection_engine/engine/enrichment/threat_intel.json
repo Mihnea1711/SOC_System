@@ -1,0 +1,32 @@
+[
+  {
+    "ip": "8.8.8.8",
+    "threat_type": "Known Scanner",
+    "confidence_score": 85
+  },
+  {
+    "ip": "1.1.1.1",
+    "threat_type": "Known Scanner",
+    "confidence_score": 70
+  },
+  {
+    "ip": "103.15.26.11",
+    "threat_type": "Botnet",
+    "confidence_score": 95
+  },
+  {
+    "ip": "185.220.101.14",
+    "threat_type": "Tor Exit Node",
+    "confidence_score": 100
+  },
+  {
+    "ip": "45.133.1.22",
+    "threat_type": "Malware C2",
+    "confidence_score": 90
+  },
+  {
+    "ip": "192.168.1.100",
+    "threat_type": "Internal Compromised",
+    "confidence_score": 100
+  }
+]

@@ -2,20 +2,20 @@
 
 This file tracks potential features and enhancements that can be added to the SOC system to increase its detection capabilities and visual impact, particularly for the dissertation presentation.
 
-## 1. Expand Enrichment Module
+## 1. ~~Expand Enrichment Module~~
 
-### A. Upgrade GeoIP Enrichment (City & ASN)
+### A. ~~Upgrade GeoIP Enrichment (City & ASN)~~
 Currently, the system uses the `GeoLite2-Country` database. Upgrading to the free `GeoLite2-City` and `GeoLite2-ASN` databases would provide significantly richer context:
 - **Coordinates:** Extract `latitude` and `longitude`. This is critical for Kibana, as it allows plotting attacks on a live, interactive map dashboard.
 - **ASN (Autonomous System Number):** Extract `isp_name` or `organization` (e.g., "DigitalOcean", "Amazon AWS", "Comcast"). This helps analysts determine if an attack is originating from a rented VPS (hosting provider) or a compromised home router (residential ISP).
 
-### B. Expand Threat Intelligence (Structured Data)
+### B. ~~Expand Threat Intelligence (Structured Data)~~
 Currently, `threat_intel.txt` is a flat list of malicious IPs. Converting this to a structured format like CSV or JSON (e.g., `ip, threat_type, confidence_score`) would allow the Enricher to add:
 - **`threat_type`:** Categorize the IP (e.g., "Tor Exit Node", "Known Scanner", "Botnet", "Malware C2").
 - **`threat_confidence`:** A score from 1-100 indicating the reliability of the intelligence.
 - *Impact:* Detection rules could be modified to trigger faster (lower thresholds) if the `threat_confidence` is high.
 
-### C. Implement "First Seen" Tracking (Behavioral Enrichment)
+### C. ~~Implement "First Seen" Tracking (Behavioral Enrichment)~~
 Utilize the existing `StateStore` (which currently tracks failed logins) to track the first time an IP interacts with the network.
 - **`is_new_ip`:** Add a boolean flag (True/False) to the enriched event.
 - *Impact:* Attacks frequently originate from newly spun-up infrastructure. Flagging an IP as "new" provides a powerful behavioral indicator that can be combined with other rules or the ML model to increase the overall anomaly score.
