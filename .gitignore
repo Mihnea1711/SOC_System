@@ -22,3 +22,6 @@ data/
 
 # geoip database files
 *.mmdb
+
+app/collectors/logs/*
+app/detection_engine/logs/*
