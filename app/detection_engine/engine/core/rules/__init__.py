@@ -4,6 +4,7 @@ from .path_traversal import detect_path_traversal
 from .brute_force import detect_brute_force
 from .ssh_bruteforce import detect_ssh_brute_force
 from .mysql_exfiltration import detect_mysql_exfiltration
+from .dns_tunneling import detect_dns_tunneling
 
 # List of all available rules
 RULES = [
@@ -12,5 +13,6 @@ RULES = [
     detect_path_traversal,
     detect_brute_force,
     detect_ssh_brute_force,
-    detect_mysql_exfiltration
+    detect_mysql_exfiltration,
+    detect_dns_tunneling
 ]

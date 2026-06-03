@@ -1,39 +1,16 @@
 # SOC Attack Simulators
 
-This directory contains the attack simulation framework for the Distributed Intrusion Detection and Response System. It is designed to generate realistic, multi-step attack traffic that will be captured by our collectors (Filebeat and Packetbeat), routed through Kafka, and ultimately analyzed by the Python Detection Engine.
-
-This directory contains the tools necessary to generate synthetic traffic and simulate cyber attacks against the SOC environment. It is designed to be modular, allowing you to easily create new attack scripts and orchestrate them using YAML scenarios.
+This directory contains the tools necessary to generate synthetic traffic and simulate cyber attacks against the monitored environment. This is crucial for testing the Detection Engine and training the Machine Learning model.
 
 ## Directory Structure
 
-* `generators/`: Contains individual Python scripts, each designed to simulate a specific type of traffic or attack (e.g., SQLi, XSS, Brute Force, Normal Warmup Traffic).
-* `scenarios/`: Contains YAML files that define a sequence of attacks to run.
-* `scenario_runner.py`: The main orchestration script that reads a YAML scenario and executes the corresponding generators.
+The simulation framework is divided into three parts:
 
----
+1. **Generators (`generators/`):** Python scripts that execute specific types of network traffic or attacks (e.g., `sqli.py`. `xss.py`, `web_traffic.py`, `brute_force.py`, `dns_tunneling.py`, ...).
+2. **Scenarios (`scenarios/`):** YAML files that define a sequence of actions, specifying which generator to run, with what arguments, and for how long.
+3. **Scenario Runner (`scenario_runner.py`):** The orchestrator script that reads a YAML scenario and executes the defined steps.
 
-## Architecture & Concept
-
-The simulation framework is split into two main components: **Generators** and **Scenarios**.
-
-### 1. Generators (`/generators`)
-Generators are standalone Python scripts that perform a single, specific type of attack. They are the "primitives" or building blocks of our simulations.
-*   `port_scan.py`: Simulates a rapid TCP SYN/Connect scan across a range of ports to trigger network anomalies.
-*   `http_bruteforce.py`: Simulates rapid HTTP POST requests to a login endpoint, using a dictionary of passwords. It includes a `--success` flag that forces sequential execution of failed attempts, followed by a 3-second delay, and finally a successful login. This guarantees the correct event order for testing stateful "Compromised Account" detection rules.
-*   `sqli_attack.py`: Injects common SQL Injection payloads into URL parameters.
-*   `xss_attack.py`: Injects Cross-Site Scripting payloads into URL parameters.
-*   `path_traversal.py`: Attempts to access restricted files (like `/etc/passwd`) using directory traversal payloads.
-
-Each generator accepts command-line arguments (target IP, ports, delays, counts) so they can be easily customized or automated.
-
-### 2. Scenarios (`/scenarios`)
-Real-world attacks are rarely a single event; they are a sequence of actions. Scenarios are YAML files that orchestrate multiple generators in a specific order, with defined delays between them. This allows us to test the **correlation** capabilities of our Detection Engine.
-
-*   `scenario_1_recon_brute.yaml`: Simulates an attacker scanning for open ports (Reconnaissance) and, upon finding a web server, launching a Brute Force attack. This tests the engine's ability to correlate network data (Packetbeat) with log data (Filebeat).
-*   `scenario_2_brute_xss.yaml`: Simulates a Brute Force attack that eventually succeeds, immediately followed by an XSS injection. This tests the engine's stateful tracking (remembering the brute force) and logical progression (escalating the XSS severity because the account was just compromised).
-*   `scenario_3_web_exfil.yaml`: Simulates a Path Traversal attack followed by an SQL Injection, representing an attacker trying multiple web vectors to exfiltrate data.
-
-### 3. The Runner (`scenario_runner.py`)
+## The Scenario Runner (`scenario_runner.py`)
 
 The Scenario Runner is a lightweight orchestration tool. Instead of manually running multiple Python scripts with different arguments, you define the entire attack sequence in a single YAML file.
 
@@ -88,7 +65,7 @@ steps:
     delay_after: 5  # Seconds to wait before the next step
 
   - name: "Step 2: Description of the next step"
-    script: "generators/another_script.py"
+    script: "generators/another_scrip t.py"
     args:
       --target: "http://localhost:8080/login"
     delay_after: 0
@@ -102,4 +79,18 @@ If you want to simulate a new type of attack (e.g., Command Injection), you need
 
 1. **Create the script:** Create a new Python file in the `generators/` directory (e.g., `generators/cmd_injection.py`).
 2. **Use `argparse`:** Your script MUST use Python's `argparse` module to accept configuration from the command line. This is how the `scenario_runner.py` passes the `args` defined in the YAML file to your script.
-3. **Generate Traffic:** Use the `requests` library to send HTTP requests to the target application (`http://localhost:8080` by default).
+3. **Generate Traffic:** Use python libraries to send requests to the target application.
+
+---
+
+## Included Generators
+
+- **`warmup.py`**: Generates normal, benign HTTP GET requests to simulate legitimate user activity. Used to "warm up" the ML model so it learns what normal looks like.
+- **`http_bruteforce.py`**: Simulates a high-volume credential stuffing attack against a web login endpoint.
+- **`sqli_attack.py`**: Sends HTTP requests containing common SQLi payloads in the URL parameters.
+- **`xss_attack.py`**: Sends HTTP requests containing Cross-Site Scripting payloads.
+- **`path_traversal.py`**: Sends HTTP requests attempting to access restricted files (e.g., `../../../etc/passwd`).
+- **`port_scan.py`**: Simulates a network reconnaissance scan across multiple ports to trigger threshold-based alerts.
+- **`ssh_compromise.py`**: Simulates an SSH brute-force attack against the monitored SSH server.
+- **`mysql_exfiltration.py`**: Simulates a database attack by connecting to MySQL and executing large data extraction queries.
+- **`dns_tunneling.py`**: Simulates data exfiltration by hex-encoding dummy sensitive data and sending it as long subdomains in DNS queries to the monitored DNS server.

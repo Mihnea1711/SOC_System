@@ -4,7 +4,7 @@ from engine.utils.config import settings
 from engine.utils.logger import logger
 
 from engine.filtering.filter_manager import NoiseFilterManager
-from engine.filtering.rules import filter_nginx_internal_notices, filter_ubuntu_connectivity, filter_firefox_detectportal, filter_static_assets, filter_nginx_not_found_errors, filter_packetbeat_unmatched_responses
+from engine.filtering.rules import filter_nginx_internal_notices, filter_ubuntu_connectivity, filter_firefox_detectportal, filter_static_assets, filter_nginx_not_found_errors, filter_packetbeat_unmatched_responses, filter_dns_noise
 from engine.normalization.normalizer import Normalizer
 
 class KafkaConsumerService:
@@ -30,8 +30,10 @@ class KafkaConsumerService:
 
         self.filter_manager.register_rule(filter_nginx_internal_notices)
         self.filter_manager.register_rule(filter_nginx_not_found_errors)
-        self.filter_manager.register_rule(filter_packetbeat_unmatched_responses)
 
+        self.filter_manager.register_rule(filter_packetbeat_unmatched_responses)
+        self.filter_manager.register_rule(filter_dns_noise)
+        
         # Initialize Normalization
         self.normalizer = Normalizer()
 

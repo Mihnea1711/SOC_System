@@ -17,6 +17,8 @@ def normalize_packetbeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
         normalized["event_type"] = "network_flow"
     elif event_dataset == "mysql" or network_protocol == "mysql":
         normalized["event_type"] = "mysql_query"
+    elif event_dataset == "dns" or network_protocol == "dns":
+        normalized["event_type"] = "dns_query"
     else:
         normalized["event_type"] = f"packetbeat_{event_dataset}" if event_dataset else "packetbeat_unknown"
 
@@ -65,5 +67,21 @@ def normalize_packetbeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
         # Also try to extract from 'method' which sometimes holds the query type
         if not normalized["payload"]:
             normalized["payload"] = raw_event.get("method")
+
+    # DNS Specifics
+    elif normalized["event_type"] == "dns_query":
+        # Extract the queried domain name
+        # Packetbeat 8.x/9.x usually puts it in dns.question.name
+        normalized["payload"] = raw_event.get("dns", {}).get("question", {}).get("name")
         
+        # Fallback for older beats or different configurations
+        if not normalized["payload"]:
+            # Sometimes it's a list if multiple questions are asked
+            questions = raw_event.get("dns", {}).get("questions", [])
+            if questions and len(questions) > 0:
+                normalized["payload"] = questions[0].get("name")
+                
+        if not normalized["payload"]:
+            normalized["payload"] = raw_event.get("query")
+            
     return normalized

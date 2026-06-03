@@ -42,19 +42,21 @@ output.kafka:
 processors:
   - drop_event:
       when:
-        or:
-          # 1. Drop all DNS traffic (Docker internal resolution creates huge noise)
-          - equals:
-              network.protocol: "dns"
-          - equals:
-              destination.port: 53
-          
-          # 2. Drop internal Kafka/Elasticsearch chatter (if Packetbeat accidentally catches it)
+        or:       
+          # 1. Drop internal Kafka/Elasticsearch chatter (if Packetbeat accidentally catches it)
           - equals:
               destination.port: 9092 # Kafka
           - equals:
               destination.port: 9200 # Elasticsearch
               
-          # 3. Drop standard Docker/OS background noise (ARP, ICMP)
+          # 2. Drop standard Docker/OS background noise (ARP, ICMP)
           - equals:
               network.transport: "icmp"
+          
+          # 3. Drop mDNS and local discovery noise
+          - equals:
+              destination.port: 5353
+          - contains:
+              dns.question.name: ".local"
+          - contains:
+              dns.question.name: "arpa"

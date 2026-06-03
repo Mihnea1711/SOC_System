@@ -159,3 +159,33 @@
 2026-06-03 12:14:55.678631993  Couldn't create pid file "/run/sshd.pid": Permission denied
 2026-06-03 12:14:55.679725736  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
 2026-06-03 12:14:55.697958987  Connection closed by ::1 port 40194
+2026-06-03 12:48:28.014983393  Received signal 15; terminating.
+2026-06-03 12:49:07.693551280  Server listening on 0.0.0.0 port 2222.
+2026-06-03 12:49:07.693607155  Server listening on :: port 2222.
+2026-06-03 12:49:07.693609715  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-03 12:49:07.697857148  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-03 12:49:07.716486177  Connection closed by ::1 port 41294
+2026-06-03 12:59:20.294036585  Received signal 15; terminating.
+2026-06-03 13:01:43.606898474  Server listening on 0.0.0.0 port 2222.
+2026-06-03 13:01:43.607539974  Server listening on :: port 2222.
+2026-06-03 13:01:43.607543964  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-03 13:01:43.609521199  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-03 13:01:43.632777889  Connection closed by ::1 port 38344
+2026-06-03 13:07:43.995694053  Received signal 15; terminating.
+2026-06-03 13:15:11.459864998  Server listening on 0.0.0.0 port 2222.
+2026-06-03 13:15:11.460867953  Server listening on :: port 2222.
+2026-06-03 13:15:11.460871044  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-03 13:15:12.460357468  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-03 13:15:12.475827379  Connection closed by ::1 port 40712
+2026-06-03 13:20:30.440235081  Received signal 15; terminating.
+2026-06-03 13:22:52.113949610  Server listening on 0.0.0.0 port 2222.
+2026-06-03 13:22:52.114020034  Server listening on :: port 2222.
+2026-06-03 13:22:52.114024554  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-03 13:22:53.113186387  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-03 13:22:53.124535965  Connection closed by ::1 port 50094
+2026-06-03 13:55:56.227202685  Received signal 15; terminating.
+2026-06-03 13:57:30.477531742  Server listening on 0.0.0.0 port 2222.
+2026-06-03 13:57:30.477899437  Server listening on :: port 2222.
+2026-06-03 13:57:30.477902901  Couldn't create pid file "/run/sshd.pid": Permission denied
+2026-06-03 13:57:31.479944593  Connection to localhost (::1) 2222 port [tcp/*] succeeded!
+2026-06-03 13:57:31.494048349  Connection closed by ::1 port 55362

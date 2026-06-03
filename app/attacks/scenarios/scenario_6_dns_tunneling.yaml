@@ -1,0 +1,10 @@
+name: "DNS Tunneling (Data Exfiltration)"
+description: "Simulates an attacker exfiltrating sensitive data by encoding it into long DNS subdomains."
+steps:
+  - name: "Run DNS Tunneling"
+    generator: "dns_tunneling.py"
+    args:
+      target: "127.0.0.1"
+      port: 5353
+      domain: "malicious-c2.com"
+      queries: 5

@@ -140,6 +140,54 @@ def filter_packetbeat_unmatched_responses(event: Dict[str, Any]) -> bool:
             elif isinstance(error_msg, list):
                 if any("Unmatched response" in msg for msg in error_msg):
                     return True
+                
+        # Check if it's a packetbeat DNS event with "No response" error
+        if event.get("type") == "dns" or event.get("event", {}).get("dataset") == "dns":
+            error_obj = event.get("error", {})
+            error_msg = error_obj.get("message")
+            
+            if not error_msg:
+                return False
+                
+            if isinstance(error_msg, str):
+                if "No response to this query" in error_msg or "Another query with the same DNS ID" in error_msg:
+                    # We ONLY want to drop these errors if they are noise.
+                    return False
+            elif isinstance(error_msg, list):
+                if any("No response to this query" in msg or "Another query with the same DNS ID" in msg for msg in error_msg):
+                    return False
+                
+    except Exception:
+        pass
+    return False
+
+def filter_dns_noise(event: Dict[str, Any]) -> bool:
+    """
+    Filters out background DNS noise like mDNS and local network resolution.
+    """
+    try:
+        if event.get("type") == "dns" or event.get("event", {}).get("dataset") == "dns":
+            # Check destination port (5353 is mDNS)
+            dest_port = event.get("destination", {}).get("port")
+            if dest_port == 5353:
+                return True
+                
+            # Check query name
+            query_name = event.get("dns", {}).get("question", {}).get("name", "")
+            if not query_name:
+                return False
+                
+            noise_patterns = [
+                ".local",
+                ".arpa",
+                "dns_server",
+                "microsoft.com",
+                "ubuntu.com",
+                "location.services.mozilla.com"
+            ]
+            
+            if any(pattern in query_name for pattern in noise_patterns):
+                return True
     except Exception:
         pass
     return False
