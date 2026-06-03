@@ -24,12 +24,12 @@ Utilize the existing `StateStore` (which currently tracks failed logins) to trac
 
 To demonstrate the versatility of the SOC (specifically its ability to monitor an entire network, not just web traffic), we can deploy additional vulnerable services to the `monitored_net` and create corresponding attack generators.
 
-### A. SSH Server (Remote Access)
+### A. ~~SSH Server (Remote Access)~~
 - **Service:** A lightweight Ubuntu/Alpine container running `sshd` exposed on port 22.
 - **Attack:** **SSH Brute Force** (using a Python script with `paramiko` to attempt rapid logins).
 - **SOC Behavior:** Packetbeat natively sniffs port 22 TCP flows. The Detection Engine will use a stateful rule to track failed TCP connections per IP. If the threshold is crossed, it generates an "SSH Brute Force" alert. The ML model will also flag the massive spike in non-HTTP request counts.
 
-### B. Database Server (Lateral Movement / Exfiltration)
+### B. ~~Database Server (Lateral Movement / Exfiltration)~~
 - **Service:** The official `mysql:latest` or `postgres` Docker container exposed on port 3306/5432.
 - **Attacks:** 
   1. **Database Brute Force:** Guessing the `root` password.
