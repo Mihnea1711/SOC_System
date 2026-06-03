@@ -4,7 +4,7 @@ networks:
     driver: bridge
     name: monitored_net
     driver_opts:
-      com.docker.network.bridge.enable_icc: "false" # containers in here should not be able (no reason to) talk to each other - only to outside networks
+      com.docker.network.bridge.enable_icc: "true" # containers in here should not be able (no reason to) talk to each other - only to outside networks
     ipam:
       driver: default
       config:

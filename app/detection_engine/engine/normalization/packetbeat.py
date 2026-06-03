@@ -1,5 +1,6 @@
 from typing import Dict, Any
 from engine.utils.helpers import create_base_normalized_event
+from engine.utils.logger import logger
 
 def normalize_packetbeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -9,10 +10,13 @@ def normalize_packetbeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
     
     # Determine specific event type
     event_dataset = raw_event.get("event", {}).get("dataset", "")
+    network_protocol = raw_event.get("network", {}).get("protocol", "")
     if event_dataset == "http":
         normalized["event_type"] = "http_request"
     elif event_dataset == "flow":
         normalized["event_type"] = "network_flow"
+    elif event_dataset == "mysql" or network_protocol == "mysql":
+        normalized["event_type"] = "mysql_query"
     else:
         normalized["event_type"] = f"packetbeat_{event_dataset}" if event_dataset else "packetbeat_unknown"
 
@@ -45,4 +49,21 @@ def normalize_packetbeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
             if request_body:
                 normalized["payload"] = request_body
 
+    # MySQL Specifics
+    elif normalized["event_type"] == "mysql_query":
+        # Packetbeat extracts the raw SQL query string
+        # Sometimes it's under mysql.query, sometimes under mysql.query.text depending on the beat version
+        query = raw_event.get("query")
+        if not query:
+            query = raw_event.get("mysql", {}).get("query")
+            
+        if isinstance(query, dict):
+            normalized["payload"] = query.get("text")
+        else:
+            normalized["payload"] = query
+
+        # Also try to extract from 'method' which sometimes holds the query type
+        if not normalized["payload"]:
+            normalized["payload"] = raw_event.get("method")
+        
     return normalized

@@ -1,0 +1,13 @@
+name: "MySQL Data Exfiltration"
+description: "Simulates an insider threat or compromised application performing massive data dumps and reconnaissance queries against the database."
+author: "SOC Admin"
+
+steps:
+  - name: "Database Exfiltration"
+    generator: "mysql_exfiltration.py"
+    args:
+      target: "127.0.0.1"
+      port: 3306
+      user: "app_user"
+      password: "app_password"
+      database: "company_db"
