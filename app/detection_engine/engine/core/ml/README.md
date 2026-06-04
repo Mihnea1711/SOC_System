@@ -37,4 +37,4 @@ The model does not look at raw logs. The `FeatureExtractor` (`features.py`) main
 - `request_count`: Volume of traffic.
 - `error_rate`: Percentage of 4xx/5xx errors (indicative of scanning, brute-forcing, or exploitation failures).
 - `avg_payload_size`: Size of requests (useful for detecting data exfiltration or large payloads like SQLi).
-- `url_variance`: Number of unique endpoints accessed (high variance indicates directory brute-forcing or crawling).
+- `variance_score`: Number of unique endpoints accessed or unique payloads sent (high variance indicates directory brute-forcing, crawling, or data exfiltration).

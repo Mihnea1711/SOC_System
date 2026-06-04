@@ -4,18 +4,15 @@ import argparse
 import random
 
 # A list of normal-looking paths that a regular user might visit
+# We only use paths that actually exist on our default Nginx server 
+# so we don't generate 404 errors (which the ML model would flag as anomalies).
 NORMAL_PATHS = [
     "/",
     "/index.html",
+    "/search",
+    "/download",
     "/about",
-    "/contact",
-    "/products",
-    "/services",
-    "/blog",
-    "/faq",
-    "/css/style.css",
-    "/js/main.js",
-    "/images/logo.png"
+    "/contact"
 ]
 
 # Normal-looking User-Agents

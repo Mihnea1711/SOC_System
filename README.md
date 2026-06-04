@@ -69,7 +69,7 @@ A typical alert output looks like this (JSON format):
       "request_count": 10.0,
       "error_rate": 1.0,
       "avg_payload_size": 0.0,
-      "url_variance": 1.0
+      "variance_score": 1.0
     }
   },
   "event": {
