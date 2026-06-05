@@ -52,9 +52,10 @@ If a critical breach is detected, the IR Engine executes **both** strategies sim
 You can easily modify how the IR Engine reacts to different threats by editing the lists at the top of `incident_responder.py`:
 
 ```python
-EXTERNAL_ATTACK_RULES = [ ... ]     # Triggers Strategy 1
-INTERNAL_COMPROMISE_RULES = [ ... ] # Triggers Strategy 2
-CRITICAL_BREACH_RULES = [ ... ]     # Triggers Both
+EXTERNAL_ATTACK_RULES = [ ... ]     # Triggers Strategy 1 (Block Source)
+COMPROMISED_TARGET_RULES = [ ... ]  # Triggers Both (Block Source, Isolate Target)
+COMPROMISED_SOURCE_RULES = [ ... ]  # Triggers Strategy 2 (Isolate Source)
+CRITICAL_BREACH_RULES = [ ... ]     # Triggers Both (Block Source, Isolate Target)
 ```
 
 ## How to Test the Response Strategies
