@@ -1,0 +1,25 @@
+services:
+  incident_response:
+    build:
+      context: .
+    container_name: incident_response
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - DOCKER_HOST=unix://var/run/docker.sock
+    volumes:
+      # Mount the host's Docker socket to allow API control over containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Shared volume with Nginx for dynamic blocklists
+      - shared_nginx_config:/etc/nginx/conf.d/shared
+      # Map the logs on host
+      - ./logs:/app/logs
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - pipeline_net
+      - monitored_net
+
+# We don't need to declare it as external here because it's already declared
+# in the collectors/docker-compose.host.yaml file, and both files are merged
+# by the main app/docker-compose.yaml file.

@@ -49,13 +49,6 @@ class AnomalyDetector:
         # Incorporates the new event into its internal definition - adjust window-size in order to control how long events stay "in-memory"
         self.model.learn_one(features)
         self.observations += 1
-
-        # 3. Suppress alerts during the warmup phase
-        # We need to ensure we have seen enough observations overall to establish a baseline.
-        # The actual suppression based on `warmup_observations` happens in processor.py, 
-        # but HalfSpaceTrees also needs to fill its internal `window_size` buffer.
-        if self.observations < self.warmup_observations:
-            pass
             
         # 4. Suppress unstable early scores
         # HalfSpaceTrees can output exactly 0.0 or 0.5 when the trees are still mostly empty or perfectly balanced.

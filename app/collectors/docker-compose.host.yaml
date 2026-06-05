@@ -1,16 +1,19 @@
 services:
-  monitored_host:
+  nginx_server:
     image: nginx:latest
-    container_name: monitored_host
+    container_name: nginx_server
     volumes:
       - ./logs/nginx:/var/log/nginx
       - ./nginx/custom_real_ip.conf:/etc/nginx/conf.d/custom_real_ip.conf:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/html:/usr/share/nginx/html:ro
+      # Shared volume for dynamic blocklist from Incident Response service
+      - shared_nginx_config:/etc/nginx/conf.d/shared
     ports:
       - "8080:80"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     networks:
       - monitored_net
 
@@ -78,8 +81,10 @@ services:
       - ./logs/ssh:/var/log/ssh:ro
       - ./beats/data:/usr/share/filebeat/data
     depends_on:
-      - kafka
-      - monitored_host
+      kafka:
+        condition: service_healthy
+      nginx_server:
+        condition: service_started
     networks:
       - pipeline_net
       - monitored_net
@@ -97,6 +102,13 @@ services:
       - NET_ADMIN
       - NET_RAW
     depends_on:
-      - kafka
-      - monitored_host
-      - mysql_server
+      kafka:
+        condition: service_healthy
+      nginx_server:
+        condition: service_started
+      mysql_server:
+        condition: service_started
+
+volumes:
+  shared_nginx_config:
+    driver: local

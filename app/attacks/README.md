@@ -19,7 +19,7 @@ The Scenario Runner is a lightweight orchestration tool. Instead of manually run
 2. It iterates through the `steps` defined in the scenario.
 3. For each step, it uses Python's `subprocess` module to execute the specified generator script.
 4. It streams the output of the generator to the console in real-time.
-5. It waits for the specified `delay_after` before moving to the next step.
+5. It handles `delay` steps by pausing execution for the specified number of seconds.
 
 ### Usage:
 ```bash
@@ -58,17 +58,18 @@ name: "Name of your scenario"
 description: "What this scenario is trying to achieve"
 steps:
   - name: "Step 1: Description of the step"
-    script: "generators/name_of_script.py"
+    generator: "name_of_script.py"
     args:
-      --arg1: "value1"
-      --arg2: "value2"
-    delay_after: 5  # Seconds to wait before the next step
+      arg1: "value1"
+      arg2: "value2"
+
+  - name: "Wait 5 seconds"
+    delay: 5
 
   - name: "Step 2: Description of the next step"
-    script: "generators/another_scrip t.py"
+    generator: "another_script.py"
     args:
-      --target: "http://localhost:8080/login"
-    delay_after: 0
+      target: "http://localhost:8080/login"
 ```
 
 ---

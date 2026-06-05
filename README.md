@@ -43,7 +43,11 @@ A custom Python service that acts as the brain of the system. It processes event
 - **Elasticsearch:** A NoSQL database optimized for search, used to store all generated alerts.
 - **Kibana:** The frontend UI used to build dashboards, search through alerts, and monitor the system's health.
 
-### 5. Attack Simulators
+### 5. Automated Incident Response
+
+- **Incident Response:** A Python service that listens to Kafka alerts and takes automated actions (e.g., dynamically updating Nginx blocklists or using the Docker API to quarantine compromised containers).
+
+### 6. Attack Simulators
 
 - **Scenario Runner:** A Python framework that orchestrates YAML-based attack scenarios (e.g., warming up the ML model with normal traffic, then launching a distributed brute-force or SQL injection attack).
 

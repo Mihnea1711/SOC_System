@@ -33,8 +33,8 @@ def send_normal_request(base_url, spoof_ip=None):
         headers['X-Forwarded-For'] = spoof_ip
         
     try:
-        # We expect 404s for most of these since our Nginx is barebones,
-        # but the *rate* and *payload size* will be normal.
+        # We expect 200s for most of these since we added mock endpoints to Nginx.
+        # This gives the ML model a baseline of normal traffic with 0 errors.
         response = requests.get(target_url, headers=headers, timeout=5)
         print(f"[NORMAL] GET {path} | Status: {response.status_code} | IP: {spoof_ip or 'Local'}")
     except requests.exceptions.RequestException as e:

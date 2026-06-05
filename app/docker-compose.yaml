@@ -8,4 +8,4 @@ include:
 
   - detection_engine/docker-compose.detection.yaml
 
-  # - response/docker-compose.response.yaml
+  - response/docker-compose.response.yaml

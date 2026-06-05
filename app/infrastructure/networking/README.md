@@ -10,9 +10,9 @@ The system uses three distinct Docker bridge networks to enforce logical separat
 - **Purpose:** Simulates the internal network of the organization being monitored.
 - **Subnet:** `172.20.0.0/16`
 - **Connected Containers:**
-  - `monitored_host` (Vulnerable Nginx)
+  - `nginx_server` (Vulnerable Nginx)
   - `packetbeat` (Sniffs this network)
-  - `filebeat` (Reads logs from `monitored_host`)
+  - `filebeat` (Reads logs from `nginx_server`)
 - **Security:** Inter-Container Communication (ICC) is explicitly disabled (`com.docker.network.bridge.enable_icc: "false"`) to prevent lateral movement between containers on this network, simulating a segmented environment.
 
 ### 2. `pipeline_net`

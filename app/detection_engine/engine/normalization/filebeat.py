@@ -32,6 +32,7 @@ def normalize_filebeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
     
     if FILEBEAT_LOG_ACCESS in log_path:
         normalized["event_type"] = "web_log"
+        normalized["destination_ip"] = "nginx_server"
 
         # Parse access log
         match = NGINX_ACCESS_REGEX.search(message)
@@ -50,6 +51,7 @@ def normalize_filebeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
             
     elif FILEBEAT_LOG_ERROR in log_path:
         normalized["event_type"] = "web_log"
+        normalized["destination_ip"] = "nginx_server"
 
         # Error logs are less structured, but we can try to extract IP if present
         ip_match = re.search(r'client:\s+(?P<ip>\d+\.\d+\.\d+\.\d+)', message)
@@ -64,7 +66,8 @@ def normalize_filebeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
     elif FILEBEAT_LOG_SSH in log_path:
         normalized["event_type"] = "ssh_log"
         normalized["destination_port"] = 2222
-        
+        normalized["destination_ip"] = "ssh_server"
+
         match = SSH_LOG_REGEX.search(message)
         if match:
             data = match.groupdict()

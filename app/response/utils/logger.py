@@ -1,19 +1,15 @@
 import logging
 import datetime
 from pathlib import Path
-from .config import settings
 
-ENGINE_DIR = Path(__file__).resolve().parent.parent.parent
-LOG_DIR = ENGINE_DIR / "logs"
+# Create a logs directory in the response app root
+BASE_DIR = Path(__file__).resolve().parent.parent
+LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
-def setup_logger(name="detection-engine"):
+def setup_logger(name="incident-response"):
     logger = logging.getLogger(name)
-    
-    # Set log level from config
-    log_level_str = settings.app.get('log_level', 'INFO')
-    log_level = getattr(logging, log_level_str.upper(), logging.INFO)
-    logger.setLevel(log_level)
+    logger.setLevel(logging.INFO)
 
     # Prevent adding handlers multiple times if instantiated repeatedly
     if logger.handlers:
@@ -32,7 +28,7 @@ def setup_logger(name="detection-engine"):
 
     # File handler (Creates a new file for every run based on timestamp)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    log_file_path = LOG_DIR / f"detection_engine_{timestamp}.log"
+    log_file_path = LOG_DIR / f"incident_response_{timestamp}.log"
     
     file_handler = logging.FileHandler(log_file_path)
     file_handler.setFormatter(formatter)

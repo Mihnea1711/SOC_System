@@ -8,10 +8,12 @@ We utilize the **Elastic Beats** family for lightweight, purpose-built data coll
 
 ### 1. Filebeat (`/beats/filebeat.yml`)
 **Purpose:** Log Collection and Forwarding.
-**Monitored Target:** Nginx Web Server (`monitored_host`).
+**Monitored Targets:** 
+- Nginx Web Server (`nginx_server`)
+- SSH Server (`ssh_server`)
 **Data Flow:**
-- Filebeat mounts the `/var/log/nginx/` directory from the host/Docker volume.
-- It continuously tails the `access.log` and `error.log` files.
+- Filebeat mounts the `/var/log/nginx/` and `/var/log/ssh/` directories from the host/Docker volumes.
+- It continuously tails the `access.log`, `error.log`, and `openssh/current` files.
 - **Pre-filtering:** The configuration includes processors to drop noisy, low-value events at the source (e.g., requests for `.css`/`.js` files, or internal Docker health checks).
 - **Output:** Ships the filtered JSON logs to the Kafka topic `raw.logs`.
 
@@ -19,9 +21,9 @@ We utilize the **Elastic Beats** family for lightweight, purpose-built data coll
 **Purpose:** Real-time Network Packet Analytics.
 **Monitored Target:** The `monitored_net` Docker bridge network.
 **Data Flow:**
-- Packetbeat runs with `network_mode: host` and `cap_add: ['NET_ADMIN']` to sniff traffic across Docker bridge interfaces.
-- It decodes network protocols (HTTP, DNS, TCP flows) in real-time.
-- **Pre-filtering:** The configuration drops internal infrastructure noise (e.g., Docker's internal DNS resolution on port 53, or traffic destined for Kafka/Elasticsearch itself).
+- Packetbeat runs with `network_mode: host` and `cap_add: ['NET_ADMIN', 'NET_RAW']` to sniff traffic across Docker bridge interfaces.
+- It decodes network protocols (HTTP, DNS, MySQL, TCP flows) in real-time.
+- **Pre-filtering:** The configuration drops internal infrastructure noise (e.g., Docker's internal DNS resolution for `*.local`, or traffic destined for Kafka/Elasticsearch itself).
 - **Output:** Ships the decoded network transactions as JSON documents to the Kafka topic `raw.packets`.
 
 ## Deployment
@@ -30,21 +32,24 @@ The collectors are deployed alongside the monitored services using Docker Compos
 
 **Location:** `app/collectors/docker-compose.host.yaml`
 
-This compose file defines:
-1.  `monitored_host`: A vulnerable Nginx web server acting as the target for our attack simulations.
-2.  `filebeat`: The log collector container.
-3.  `packetbeat`: The network sniffer container.
+This compose file defines the entire monitored environment:
+1.  `nginx_server`: A vulnerable Nginx web server acting as the target for web attack simulations.
+2.  `ssh_server`: A honeypot SSH server to demonstrate TCP-layer brute force detection.
+3.  `mysql_server`: A database container acting as a target for data exfiltration detection.
+4.  `dns_server`: A Bind9 container acting as a target for DNS tunneling and covert channels.
+5.  `filebeat`: The log collector container.
+6.  `packetbeat`: The network sniffer container.
 
 ### How to Run
 
-To start the collectors and the monitored host:
+To start the entire environment (including collectors and monitored hosts), you should use the main bootstrap script from the root `app/` directory:
 
 ```bash
-cd app/collectors
-docker compose -f docker-compose.host.yaml up -d
+cd app
+./scripts/bootstrap.sh
 ```
 
-*Note: The collectors depend on the Kafka infrastructure being up and running first, as they need to establish a connection to the `raw.logs` and `raw.packets` topics.*
+*Note: The collectors depend on the Kafka infrastructure being up and running first, as they need to establish a connection to the `raw.logs` and `raw.packets` topics. The bootstrap script handles this ordering automatically.*
 
 ## Why Pre-filtering Matters
 

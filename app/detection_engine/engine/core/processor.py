@@ -91,7 +91,7 @@ class DetectionProcessor:
             # Skip ML processing for internal Docker IPs and localhost during startup/idle
             # to prevent background noise from triggering anomalies before warmup.
             # We still allow them if they are part of an attack (which will have high variance/errors).
-            source_ip = enriched_event.get("source_ip", "")
+            source_ip = enriched_event.get("source_ip") or ""
             if source_ip.startswith("172.") or source_ip == "127.0.0.1" or source_ip.startswith("192.168."):
                 # If it's internal, only process it if it's already looking suspicious
                 # (e.g., it triggered a signature rule, meaning it's an attack simulation)
