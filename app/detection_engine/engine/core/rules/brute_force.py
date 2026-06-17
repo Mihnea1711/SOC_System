@@ -12,7 +12,7 @@ def detect_brute_force(event: Dict[str, Any], state_store: StateStore) -> Option
     """
     Stateful rule to detect HTTP Brute Force attacks and Compromised Accounts.
     """
-    # 1. Ultra-fast early rejection
+    # 1. early rejection
     if event.get("event_type") not in ["http_request", "web_log", "ssh_log"]:
         return None
         
@@ -23,7 +23,7 @@ def detect_brute_force(event: Dict[str, Any], state_store: StateStore) -> Option
         if http_method.upper() != "POST":
             return None
             
-        # We check for both /login (failures) and / (success in our mock)
+        # check for both /login (failures) and / (success in the mock)
         if "login" not in url_path.lower() and url_path != "/":
             return None
         

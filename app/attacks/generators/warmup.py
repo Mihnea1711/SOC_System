@@ -4,8 +4,8 @@ import argparse
 import random
 
 # A list of normal-looking paths that a regular user might visit
-# We only use paths that actually exist on our default Nginx server 
-# so we don't generate 404 errors (which the ML model would flag as anomalies).
+# Only use paths that actually exist on the default Nginx server 
+# so it won't generate 404 errors (which the ML model would flag as anomalies).
 NORMAL_PATHS = [
     "/",
     "/index.html",
@@ -33,7 +33,7 @@ def send_normal_request(base_url, spoof_ip=None):
         headers['X-Forwarded-For'] = spoof_ip
         
     try:
-        # We expect 200s for most of these since we added mock endpoints to Nginx.
+        # Expect 200s for most of these since there are mock endpoints to Nginx.
         # This gives the ML model a baseline of normal traffic with 0 errors.
         response = requests.get(target_url, headers=headers, timeout=5)
         print(f"[NORMAL] GET {path} | Status: {response.status_code} | IP: {spoof_ip or 'Local'}")

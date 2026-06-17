@@ -1,12 +1,12 @@
 # Custom sshd_config for the Honeypot
-# We disable rate limiting and penalties so our attack scripts can actually run
+# Disable rate limiting and penalties so the attack scripts can actually run
 
 Port 2222
 PermitRootLogin yes
 PasswordAuthentication yes
 PermitEmptyPasswords no
 
-# Disable the penalty system that was blocking our script
+# Disable the penalty system that was blocking the script
 PerSourcePenalties no
 PerSourceNetBlockSize 32:128
 

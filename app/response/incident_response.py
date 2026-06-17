@@ -171,8 +171,6 @@ class IncidentResponder:
         # Handle spoofed IPs from our attack scenarios
         # If the IP is from our spoofed ranges (e.g., 103.x, 45.x, 185.x), it won't actually
         # affect your real host machine's access, but it WILL successfully write to the blocklist.
-        # This is perfect for demonstration purposes without locking you out of your own project!
-
         try:
             # 1. Write to shared volume
             with open(NGINX_BLOCKLIST_PATH, 'a') as f:

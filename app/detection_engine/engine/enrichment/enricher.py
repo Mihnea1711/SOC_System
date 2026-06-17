@@ -100,7 +100,7 @@ class Enricher:
         event["source_asn"] = None
         event["source_isp_name"] = None
         
-        # We skip local/private Docker IPs to avoid unnecessary exceptions
+        # skip local/private Docker IPs to avoid unnecessary exceptions
         if source_ip and not source_ip.startswith(("10.", "172.", "192.168.", "127.")):
             # City / Country Lookup
             try:
@@ -140,10 +140,10 @@ class Enricher:
         if self.state_store and source_ip:
             first_seen_key = f"first_seen_{source_ip}"
             if not self.state_store.get(first_seen_key):
-                # We have never seen this IP before
+                # never seen this IP before
                 event["is_new_ip"] = True
                 # Store it so we know we've seen it. TTL could be long (e.g., 24 hours) or infinite if supported.
-                # Here we set a 24 hour TTL (86400 seconds)
+                # set a 24 hour TTL (86400 seconds)
                 self.state_store.set(first_seen_key, True, ttl_seconds=86400)
         
         return event

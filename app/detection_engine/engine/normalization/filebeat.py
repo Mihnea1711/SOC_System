@@ -53,7 +53,7 @@ def normalize_filebeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
         normalized["event_type"] = "web_log"
         normalized["destination_ip"] = "nginx_server"
 
-        # Error logs are less structured, but we can try to extract IP if present
+        # Error logs are less structured -> can try to extract IP if present
         ip_match = re.search(r'client:\s+(?P<ip>\d+\.\d+\.\d+\.\d+)', message)
         if ip_match:
             normalized["source_ip"] = ip_match.group("ip")
@@ -72,10 +72,10 @@ def normalize_filebeat(raw_event: Dict[str, Any]) -> Dict[str, Any]:
         if match:
             data = match.groupdict()
             normalized["source_ip"] = data.get("ip")
-            # We map "Failed" to 401 and "Accepted" to 200 so we can reuse logic easily, 
-            # or we can just pass the string. Let's use status_code for consistency.
+            # map "Failed" to 401 and "Accepted" to 200 -> can reuse logic easily, 
+            # or can just pass the string. use status_code for consistency.
             normalized["status_code"] = 200 if data.get("status") == "Accepted" else 401
-            # We put the username in the payload so the rules can extract it
+            # put the username in the payload so the rules can extract it
             normalized["payload"] = f"username={data.get('user')}"
 
     return normalized
