@@ -1,4 +1,4 @@
-# Distributed Intrusion Detection System (Mini SOC)
+# Distributed Intrusion Detection System
 
 A containerized, event-driven Security Operations Center (SOC) designed to ingest, process, and analyze network and host data in real-time. The system uses a combination of signature-based rules and streaming Machine Learning (ML) to detect both known attacks and zero-day anomalies.
 
